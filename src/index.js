@@ -14,7 +14,7 @@ const screenScaleRito = window.innerWidth / originWidth;
 
 const finalHeight = clientHeight / screenScaleRito;
 
-let app = new PIXI.Application({
+const app = new PIXI.Application({
   width: clientWidth,
   height: clientHeight,
   antialias: true,    // default: false
@@ -30,6 +30,14 @@ PIXI.loader
   .add('touma', toumaImg)
   .load(setup);
 
+let setsuna = null;
+let touma = null;
+
+const toumaAnimateYBegin = finalHeight - 560;
+const toumaAnimateYEnd = finalHeight - 610;
+
+const setsunaAnimateYBegin = finalHeight - 566;
+const setsunaAnimateYEnd = finalHeight - 510;
 function setup() {
 
   // 最底层的场景，用于缩放
@@ -43,14 +51,28 @@ function setup() {
   rootContainer.addChild(gameBeginScene);
 
   // 冬马Sprite
-  const touma = new PIXI.Sprite(PIXI.loader.resources['touma'].texture);
-  touma.y = finalHeight - 610;
+  touma = new PIXI.Sprite(PIXI.loader.resources['touma'].texture);
+  touma.y = toumaAnimateYBegin;
   touma.x = 375;
   gameBeginScene.addChild(touma);
 
   // 雪菜Sprite
-  const setsuna = new PIXI.Sprite(PIXI.loader.resources['setsuna'].texture);
-  setsuna.y = finalHeight - 566;
+  setsuna = new PIXI.Sprite(PIXI.loader.resources['setsuna'].texture);
+  setsuna.y = setsunaAnimateYBegin;
   setsuna.x = 40;
   gameBeginScene.addChild(setsuna);
+
+  // 每秒执行60次该方法，类似requestAnimationFrame
+  app.ticker.add(delta => gameLoop(delta));
+}
+
+function gameLoop(delta) {
+  // setsuna.y += 1;
+  if (touma.y > toumaAnimateYEnd) {
+    touma.y -= 1;
+  }
+
+  if (setsuna.y < setsunaAnimateYEnd) {
+    setsuna.y += 1;
+  }
 }
