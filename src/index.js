@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js';
+import { TweenMax, Power0 } from "gsap/all";
 
 import './styles/global.css';
 
@@ -32,9 +33,10 @@ PIXI.loader
 
 let setsuna = null;
 let touma = null;
+let gameBeginScene = null;
 
 const toumaAnimateYBegin = finalHeight - 560;
-const toumaAnimateYEnd = finalHeight - 610;
+const toumaAnimateYEnd = finalHeight - 580;
 
 const setsunaAnimateYBegin = finalHeight - 566;
 const setsunaAnimateYEnd = finalHeight - 510;
@@ -47,13 +49,15 @@ function setup() {
 
 
   // 场景1 开场动画
-  const gameBeginScene = new PIXI.Container();
+  gameBeginScene = new PIXI.Container();
   rootContainer.addChild(gameBeginScene);
+
+  gameBeginScene.alpha = 0;
 
   // 冬马Sprite
   touma = new PIXI.Sprite(PIXI.loader.resources['touma'].texture);
   touma.y = toumaAnimateYBegin;
-  touma.x = 375;
+  touma.x = 370;
   gameBeginScene.addChild(touma);
 
   // 雪菜Sprite
@@ -63,16 +67,16 @@ function setup() {
   gameBeginScene.addChild(setsuna);
 
   // 每秒执行60次该方法，类似requestAnimationFrame
-  app.ticker.add(delta => gameLoop(delta));
+  // app.ticker.add(delta => gameLoop(delta));
+
+  TweenMax.to(setsuna, 1, { y: setsunaAnimateYEnd });
+  TweenMax.to(touma, 1, { y: toumaAnimateYEnd });
+  // 透明度使用线性缓动
+  TweenMax.to(gameBeginScene, 1, { alpha: 1, ease: Power0.easeNone });
 }
 
 function gameLoop(delta) {
-  // setsuna.y += 1;
-  if (touma.y > toumaAnimateYEnd) {
-    touma.y -= 1;
-  }
-
-  if (setsuna.y < setsunaAnimateYEnd) {
-    setsuna.y += 1;
-  }
+  // if (touma.y >= toumaAnimateYEnd) {
+  //   gameBeginScene.alpha += .01;
+  // }
 }
