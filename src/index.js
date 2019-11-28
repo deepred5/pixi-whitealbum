@@ -1,13 +1,13 @@
 import * as PIXI from 'pixi.js';
 import { TweenMax, Power0 } from "gsap/all";
-import SnowFallBackground from './snowFall';
+import SnowFallBackground from './snow/snowFall';
 
 import setsunaImg from '../assets/setsuna.png';
 import toumaImg from '../assets/touma.png';
 
 import './styles/global.css';
 
-const { Application, Container, Graphics, loader, Sprite } = PIXI;
+const { Application, Container, loader, Sprite } = PIXI;
 
 class WhiteAlbumApp {
   constructor() {
