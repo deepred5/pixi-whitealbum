@@ -2,10 +2,9 @@
   "name": "pixi-whitealbum",
   "version": "1.0.0",
   "description": "whitealbum2",
-  "main": "index.js",
   "scripts": {
-    "dev": "parcel src/index.html -p 8081",
-    "build": "parcel build src/index.html",
+    "dev": "parcel public/index.html -p 8081",
+    "build": "parcel build public/index.html",
     "prebuild": "echo '❄️❄️❄️又到了白色相簿的季节❄️❄️❄️' && rimraf dist",
     "postbuild": "echo '❄️❄️❄️你为什么那么熟练啊!❄️❄️❄️'"
   },
