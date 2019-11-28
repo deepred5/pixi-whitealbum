@@ -1,82 +1,136 @@
 import * as PIXI from 'pixi.js';
 import { TweenMax, Power0 } from "gsap/all";
-
-import './styles/global.css';
+import SnowFallBackground from './snowFall';
 
 import setsunaImg from '../assets/setsuna.png';
 import toumaImg from '../assets/touma.png';
 
-const originWidth = 750;
+import './styles/global.css';
 
-const clientWidth = window.innerWidth;
-const clientHeight = window.innerHeight;
+const { Application, Container, Graphics, loader, Sprite } = PIXI;
 
-const screenScaleRito = window.innerWidth / originWidth;
+class WhiteAlbumApp {
+  constructor() {
+    this.originWidth = 750;
+    this.maxDist = 100;
+    this.amount = 100;
+    this.clientWidth = window.innerWidth;
+    this.clientHeight = window.innerHeight;
+    this.screenScaleRito = this.clientWidth / this.originWidth;
+    this.finalHeight = this.clientHeight / this.screenScaleRito;
 
-const finalHeight = clientHeight / screenScaleRito;
+    this.snowPointArr = [];
 
-const app = new PIXI.Application({
-  width: clientWidth,
-  height: clientHeight,
-  antialias: true,    // default: false
-  transparent: false, // default: false
-  resolution: 1       // default: 1
-});
+    this.init();
 
-document.body.appendChild(app.view);
+  }
+
+  init() {
+    const app = new Application({
+      width: this.clientWidth,
+      height: this.clientHeight,
+      antialias: true,
+      transparent: false,
+      resolution: 1
+    });
+
+    this.app = app;
+    this.preLoad();
+
+  }
+
+  preLoad() {
+    loader
+      .add('setsuna', setsunaImg)
+      .add('touma', toumaImg)
+      .load(this.setup.bind(this));
+  }
+
+  setup() {
+    document.body.appendChild(this.app.view);
+    this.createRootContainer();
+    this.createSnowContainer();
+    this.initScene();
+    this.app.ticker.add(delta => this.gameLoop(delta));
+  }
+
+  gameLoop() {
+    this.snowFallBackground.tick();
+  }
+
+  createRootContainer() {
+    // 最底层的场景，用于缩放
+    const rootContainer = new Container();
+    this.app.stage.addChild(rootContainer);
+    rootContainer.scale.set(this.screenScaleRito, this.screenScaleRito);
+
+    this.rootContainer = rootContainer;
+  }
+
+  createSnowContainer() {
+    // 雪花容器
+    const { screenScaleRito, rootContainer } = this;
+    const snowContainer = new Container();
+    // 还原缩放，否则雪花太小
+    snowContainer.scale.set(1 / screenScaleRito, 1 / screenScaleRito);
+    rootContainer.addChild(snowContainer);
+
+    this.snowContainer = snowContainer;
+  }
 
 
-PIXI.loader
-  .add('setsuna', setsunaImg)
-  .add('touma', toumaImg)
-  .load(setup);
-
-let setsuna = null;
-let touma = null;
-let gameBeginScene = null;
-
-const toumaAnimateYBegin = finalHeight - 560;
-const toumaAnimateYEnd = finalHeight - 580;
-
-const setsunaAnimateYBegin = finalHeight - 566;
-const setsunaAnimateYEnd = finalHeight - 510;
-function setup() {
-
-  // 最底层的场景，用于缩放
-  const rootContainer = new PIXI.Container();
-  app.stage.addChild(rootContainer);
-  rootContainer.scale.set(screenScaleRito, screenScaleRito);
+  initScene() {
+    this.initSnowFallScene();
+    this.initBeginScene();
+  }
 
 
-  // 场景1 开场动画
-  gameBeginScene = new PIXI.Container();
-  rootContainer.addChild(gameBeginScene);
+  initSnowFallScene() {
+    const { clientHeight, clientWidth, maxDist, snowContainer, amount } = this;
+    this.snowFallBackground = new SnowFallBackground({
+      width: clientWidth,
+      height: clientHeight,
+      maxDist,
+      parent: snowContainer,
+      amount
+    })
+  }
 
-  gameBeginScene.alpha = 0;
+  initBeginScene() {
+    const { finalHeight, rootContainer } = this;
+    const toumaAnimateYBegin = finalHeight - 560;
+    const toumaAnimateYEnd = finalHeight - 580;
 
-  // 冬马Sprite
-  touma = new PIXI.Sprite(PIXI.loader.resources['touma'].texture);
-  touma.y = toumaAnimateYBegin;
-  touma.x = 370;
-  gameBeginScene.addChild(touma);
+    const setsunaAnimateYBegin = finalHeight - 566;
+    const setsunaAnimateYEnd = finalHeight - 510;
 
-  // 雪菜Sprite
-  setsuna = new PIXI.Sprite(PIXI.loader.resources['setsuna'].texture);
-  setsuna.y = setsunaAnimateYBegin;
-  setsuna.x = 40;
-  gameBeginScene.addChild(setsuna);
 
-  // 每秒执行60次该方法，类似requestAnimationFrame
-  // app.ticker.add(delta => gameLoop(delta));
+    // 场景1 开场动画
+    const gameBeginScene = new Container();
+    rootContainer.addChild(gameBeginScene);
 
-  TweenMax.to(setsuna, 1, { y: setsunaAnimateYEnd });
-  TweenMax.to(touma, 1, { y: toumaAnimateYEnd });
-  // 透明度使用线性缓动
-  TweenMax.to(gameBeginScene, 1, { alpha: 1, ease: Power0.easeNone });
+    gameBeginScene.alpha = 0;
+
+
+    // 冬马Sprite
+    const touma = new Sprite(loader.resources['touma'].texture);
+    touma.y = toumaAnimateYBegin;
+    touma.x = 370;
+    gameBeginScene.addChild(touma);
+
+    // 雪菜Sprite
+    const setsuna = new Sprite(loader.resources['setsuna'].texture);
+    setsuna.y = setsunaAnimateYBegin;
+    setsuna.x = 40;
+    gameBeginScene.addChild(setsuna);
+
+    TweenMax.to(setsuna, 1, { y: setsunaAnimateYEnd, delay: 0.5 });
+    TweenMax.to(touma, 1, { y: toumaAnimateYEnd, delay: 0.5 });
+    // 透明度使用线性缓动
+    TweenMax.to(gameBeginScene, 1, { alpha: 1, ease: Power0.easeNone, delay: 0.5 });
+  }
+
 }
 
-function gameLoop(delta) {
-  // if (touma.y >= toumaAnimateYEnd) {
-  //   gameBeginScene.alpha += .01;
-  // }
-}
+const app = new WhiteAlbumApp();
+
