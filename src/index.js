@@ -1,4 +1,5 @@
-import * as PIXI from 'pixi.js';
+import { Application, Container, Loader, Sprite } from 'pixi.js';
+import sound from 'pixi-sound';
 import { TweenMax, Power0 } from "gsap/all";
 import SnowFallBackground from './snow/snowFall';
 
@@ -7,7 +8,7 @@ import toumaImg from '../assets/touma.png';
 
 import './styles/global.css';
 
-const { Application, Container, loader, Sprite } = PIXI;
+const loader = new Loader();
 
 class WhiteAlbumApp {
   constructor() {
@@ -42,19 +43,26 @@ class WhiteAlbumApp {
   }
 
   preLoad() {
+    // https://pixijs.io/pixi-sound/examples/resources/boing.mp3
     loader
       .add('setsuna', setsunaImg)
       .add('touma', toumaImg)
+      .add('bgm', 'http://pic.deepred5.com/wabg.mp3')
       .load(this.setup.bind(this));
   }
 
   setup() {
     this.loadingDom.style.display = 'none';
+    this.playBgm();
     document.body.appendChild(this.app.view);
     this.createRootContainer();
     this.createSnowContainer();
     this.initScene();
     this.app.ticker.add(delta => this.gameLoop(delta));
+  }
+
+  playBgm() {
+    sound.play('bgm', { loop: true });
   }
 
   gameLoop() {
