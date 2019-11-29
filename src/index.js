@@ -101,9 +101,12 @@ class WhiteAlbumApp {
 
   initBeginScene() {
     const { finalHeight, rootContainer } = this;
-    const toumaAnimateYBegin = finalHeight - 560;
+
+    // 冬马
+    const toumaAnimateYBegin = finalHeight - 550;
     const toumaAnimateYEnd = finalHeight - 580;
 
+    // 雪菜
     const setsunaAnimateYBegin = finalHeight - 566;
     const setsunaAnimateYEnd = finalHeight - 510;
 
@@ -121,11 +124,24 @@ class WhiteAlbumApp {
     touma.x = 370;
     gameBeginScene.addChild(touma);
 
+    // touma.buttonMode = true;
+    touma.interactive = true;
+    touma.on('tap', () => {
+      TweenMax.to(touma, 0.8, { y: toumaAnimateYEnd });
+      TweenMax.to(setsuna, 0.6, { y: setsunaAnimateYEnd });
+    })
+
     // 雪菜Sprite
     const setsuna = new Sprite(loader.resources['setsuna'].texture);
     setsuna.y = setsunaAnimateYBegin;
     setsuna.x = 40;
     gameBeginScene.addChild(setsuna);
+
+    setsuna.interactive = true;
+    setsuna.on('tap', () => {
+      TweenMax.to(touma, 0.8, { y: toumaAnimateYBegin });
+      TweenMax.to(setsuna, 0.6, { y: setsunaAnimateYBegin });
+    })
 
     TweenMax.to(setsuna, 1, { y: setsunaAnimateYEnd, delay: 0.5 });
     TweenMax.to(touma, 1, { y: toumaAnimateYEnd, delay: 0.5 });

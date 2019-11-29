@@ -6,7 +6,7 @@
     "dev": "parcel public/index.html -p 8081",
     "build": "parcel build public/index.html --public-url ./",
     "prebuild": "echo '❄️❄️❄️又到了白色相簿的季节❄️❄️❄️' && rimraf dist",
-    "postbuild": "echo '❄️❄️❄️你为什么那么熟练啊!❄️❄️❄️'"
+    "postbuild": "echo '❄️❄️❄️你为什么那么熟练啊❄️❄️❄️'"
   },
   "keywords": [],
   "author": "deepred",
