@@ -19,6 +19,8 @@ class WhiteAlbumApp {
     this.screenScaleRito = this.clientWidth / this.originWidth;
     this.finalHeight = this.clientHeight / this.screenScaleRito;
 
+    this.loadingDom = document.querySelector('.loading');
+
     this.snowPointArr = [];
 
     this.init();
@@ -47,6 +49,7 @@ class WhiteAlbumApp {
   }
 
   setup() {
+    this.loadingDom.style.display = 'none';
     document.body.appendChild(this.app.view);
     this.createRootContainer();
     this.createSnowContainer();
@@ -133,4 +136,3 @@ class WhiteAlbumApp {
 }
 
 const app = new WhiteAlbumApp();
-
