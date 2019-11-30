@@ -149,7 +149,7 @@ class WhiteAlbumApp {
     const setsunaAnimateYEnd = finalHeight - 510;
 
     // logo
-    const logoY = finalHeight / 2 - 340;
+    const logoY = finalHeight / 2 - 460;
 
 
     // 开场动画
