@@ -5,6 +5,7 @@ import SnowFallBackground from './snow/snowFall';
 
 import setsunaImg from '../assets/setsuna.png';
 import toumaImg from '../assets/touma.png';
+import bgm from '../assets/bgm.mp3';
 
 import './styles/global.css';
 
@@ -47,7 +48,7 @@ class WhiteAlbumApp {
     loader
       .add('setsuna', setsunaImg)
       .add('touma', toumaImg)
-      .add('bgm', 'http://pic.deepred5.com/wabg.mp3')
+      .add('bgm', bgm)
       .load(this.setup.bind(this));
   }
 
@@ -62,7 +63,9 @@ class WhiteAlbumApp {
   }
 
   playBgm() {
-    sound.play('bgm', { loop: true });
+    if (!loader.resources['bgm'].sound.isPlaying) {
+      sound.play('bgm', { loop: true });
+    }
   }
 
   gameLoop() {
@@ -137,6 +140,8 @@ class WhiteAlbumApp {
     touma.on('tap', () => {
       TweenMax.to(touma, 0.8, { y: toumaAnimateYEnd });
       TweenMax.to(setsuna, 0.6, { y: setsunaAnimateYEnd });
+      // chrome限制不能自动播放背景音乐，需要用户手动触发
+      this.playBgm();
     })
 
     // 雪菜Sprite
@@ -149,6 +154,8 @@ class WhiteAlbumApp {
     setsuna.on('tap', () => {
       TweenMax.to(touma, 0.8, { y: toumaAnimateYBegin });
       TweenMax.to(setsuna, 0.6, { y: setsunaAnimateYBegin });
+      // chrome限制不能自动播放背景音乐，需要用户手动触发
+      this.playBgm();
     })
 
     TweenMax.to(setsuna, 1, { y: setsunaAnimateYEnd, delay: 0.5 });
