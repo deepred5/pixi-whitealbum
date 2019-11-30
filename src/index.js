@@ -1,10 +1,11 @@
-import { Application, Container, Loader, Sprite } from 'pixi.js';
+import { Application, Container, Loader, Sprite, Graphics } from 'pixi.js';
 import sound from 'pixi-sound';
 import { TweenMax, Power0 } from "gsap/all";
 import SnowFallBackground from './snow/snowFall';
 
 import setsunaImg from '../assets/setsuna.png';
 import toumaImg from '../assets/touma.png';
+import snowImg from '../assets/snow.png';
 import bgm from '../assets/bgm.mp3';
 
 import './styles/global.css';
@@ -48,8 +49,32 @@ class WhiteAlbumApp {
     loader
       .add('setsuna', setsunaImg)
       .add('touma', toumaImg)
+      .add('snow', snowImg)
       .add('bgm', bgm)
       .load(this.setup.bind(this));
+  }
+
+  createtoumaSnow(xPos, yPos) {
+    var toumaSnow = new Graphics();
+
+    toumaSnow.x = xPos;
+    toumaSnow.y = yPos;
+
+    var toumaSnowWidth = 34,
+      toumaSnowHeight = toumaSnowWidth,
+      toumaSnowHalfway = toumaSnowWidth / 2;
+
+    // draw toumaSnow 
+    toumaSnow.beginFill(0xFFFFFF, 0.8);
+    toumaSnow.lineStyle(0, 0xFFFFFF, 0.8);
+    toumaSnow.moveTo(toumaSnowWidth, 0);
+    toumaSnow.lineTo(toumaSnowHalfway, toumaSnowHeight);
+    toumaSnow.lineTo(0, 0);
+    toumaSnow.lineTo(toumaSnowHalfway, 0);
+    toumaSnow.endFill();
+
+    return toumaSnow;
+
   }
 
   setup() {
@@ -121,6 +146,8 @@ class WhiteAlbumApp {
     const setsunaAnimateYBegin = finalHeight - 566;
     const setsunaAnimateYEnd = finalHeight - 510;
 
+    // 冬马
+
 
     // 场景1 开场动画
     const gameBeginScene = new Container();
@@ -128,40 +155,90 @@ class WhiteAlbumApp {
 
     gameBeginScene.alpha = 0;
 
+    // 东马和snow的container
+    const toumaContainer = new Container();
+    gameBeginScene.addChild(toumaContainer);
+    toumaContainer.x = 370;
+    toumaContainer.y = toumaAnimateYBegin;
 
     // 冬马Sprite
     const touma = new Sprite(loader.resources['touma'].texture);
-    touma.y = toumaAnimateYBegin;
-    touma.x = 370;
-    gameBeginScene.addChild(touma);
+    touma.y = 0;
+    touma.x = 0;
+    toumaContainer.addChild(touma);
 
-    // touma.buttonMode = true;
+    // 冬马snow
+    const toumaSnow = new Sprite(loader.resources['snow'].texture);
+    toumaSnow.x = 100;
+    toumaSnow.y = -60;
+    toumaContainer.addChild(toumaSnow);
+
     touma.interactive = true;
     touma.on('tap', () => {
-      TweenMax.to(touma, 0.8, { y: toumaAnimateYEnd });
-      TweenMax.to(setsuna, 0.6, { y: setsunaAnimateYEnd });
+      TweenMax.to(toumaContainer, 0.8, { y: toumaAnimateYEnd });
+      TweenMax.to(setsunaContainer, 0.6, { y: setsunaAnimateYEnd });
+
+      // 冬马头顶的雪花展示
+      TweenMax.to(toumaSnow, 0.3, { alpha: 1, delay: 0.2 });
+      TweenMax.fromTo(toumaSnow, 0.8, { alpha: 1 }, { alpha: 0, repeat: -1, yoyo: true, delay: 0.5 });
+
+      // 关闭雪菜头顶的雪花
+      TweenMax.to(setsunaSnow, 0.3, {
+        alpha: 0,
+        delay: 0.2,
+        onComplete: function () {
+          TweenMax.killTweensOf(setsunaSnow);
+        }
+      });
+
       // chrome限制不能自动播放背景音乐，需要用户手动触发
       this.playBgm();
     })
+    
+    // 雪菜和snow的container
+    const setsunaContainer = new Container();
+    gameBeginScene.addChild(setsunaContainer);
+    setsunaContainer.x = 40;
+    setsunaContainer.y = setsunaAnimateYBegin;
 
     // 雪菜Sprite
     const setsuna = new Sprite(loader.resources['setsuna'].texture);
-    setsuna.y = setsunaAnimateYBegin;
-    setsuna.x = 40;
-    gameBeginScene.addChild(setsuna);
+    setsuna.y = 0;
+    setsuna.x = 0;
+    setsunaContainer.addChild(setsuna);
+
+    const setsunaSnow = new Sprite(loader.resources['snow'].texture);
+    setsunaSnow.alpha = 0;
+    setsunaSnow.x = 200;
+    setsunaSnow.y = -60;
+    setsunaContainer.addChild(setsunaSnow);
 
     setsuna.interactive = true;
     setsuna.on('tap', () => {
-      TweenMax.to(touma, 0.8, { y: toumaAnimateYBegin });
-      TweenMax.to(setsuna, 0.6, { y: setsunaAnimateYBegin });
+      TweenMax.to(toumaContainer, 0.8, { y: toumaAnimateYBegin });
+      TweenMax.to(setsunaContainer, 0.6, { y: setsunaAnimateYBegin });
+
+      // 雪菜头顶的雪花展示，并且循环透明
+      TweenMax.to(setsunaSnow, 0.3, { alpha: 1, delay: 0.2 });
+      TweenMax.fromTo(setsunaSnow, 0.8, { alpha: 1 }, { alpha: 0, repeat: -1, yoyo: true, delay: 0.5 });
+
+      // 关闭冬马头顶的雪花
+      TweenMax.to(toumaSnow, 0.3, {
+        alpha: 0,
+        delay: 0.2,
+        onComplete: function () {
+          TweenMax.killTweensOf(toumaSnow);
+        }
+      });
       // chrome限制不能自动播放背景音乐，需要用户手动触发
       this.playBgm();
     })
 
-    TweenMax.to(setsuna, 1, { y: setsunaAnimateYEnd, delay: 0.5 });
-    TweenMax.to(touma, 1, { y: toumaAnimateYEnd, delay: 0.5 });
+    TweenMax.to(setsunaContainer, 1, { y: setsunaAnimateYEnd, delay: 0.5 });
+    TweenMax.to(toumaContainer, 1, { y: toumaAnimateYEnd, delay: 0.5 });
     // 透明度使用线性缓动
     TweenMax.to(gameBeginScene, 1, { alpha: 1, ease: Power0.easeNone, delay: 0.5 });
+    TweenMax.fromTo(toumaSnow, 0.8, { alpha: 1 }, { alpha: 0, repeat: -1, yoyo: true, delay: 1.5 });
   }
 
 }
