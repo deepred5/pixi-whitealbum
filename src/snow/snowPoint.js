@@ -1,5 +1,5 @@
 /**
- * 雪花类
+ * 单个雪花 
  */
 export default class SnowPoint {
   constructor(clientWidth, clientHeight,  maxDist) {

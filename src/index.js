@@ -1,7 +1,8 @@
-import { Application, Container, Loader, Sprite, Graphics } from 'pixi.js';
+import { Application, Container, Loader, Sprite, Text, TextStyle, Graphics } from 'pixi.js';
 import sound from 'pixi-sound';
 import { TweenMax, Power0 } from "gsap/all";
 import SnowFallBackground from './snow/snowFall';
+import { gradient } from './util';
 
 import setsunaImg from '../assets/setsuna.png';
 import toumaImg from '../assets/touma.png';
@@ -56,32 +57,9 @@ class WhiteAlbumApp {
       .load(this.setup.bind(this));
   }
 
-  createtoumaSnow(xPos, yPos) {
-    var toumaSnow = new Graphics();
-
-    toumaSnow.x = xPos;
-    toumaSnow.y = yPos;
-
-    var toumaSnowWidth = 34,
-      toumaSnowHeight = toumaSnowWidth,
-      toumaSnowHalfway = toumaSnowWidth / 2;
-
-    // draw toumaSnow 
-    toumaSnow.beginFill(0xFFFFFF, 0.8);
-    toumaSnow.lineStyle(0, 0xFFFFFF, 0.8);
-    toumaSnow.moveTo(toumaSnowWidth, 0);
-    toumaSnow.lineTo(toumaSnowHalfway, toumaSnowHeight);
-    toumaSnow.lineTo(0, 0);
-    toumaSnow.lineTo(toumaSnowHalfway, 0);
-    toumaSnow.endFill();
-
-    return toumaSnow;
-
-  }
-
   setup() {
     this.loadingDom.style.display = 'none';
-    this.playBgm();
+    // this.playBgm();
     document.body.appendChild(this.app.view);
     this.createRootContainer();
     this.createSnowContainer();
@@ -140,17 +118,27 @@ class WhiteAlbumApp {
   initBeginScene() {
     const { finalHeight, rootContainer } = this;
 
-    // 冬马
+    // 冬马 position
     const toumaAnimateYBegin = finalHeight - 550;
     const toumaAnimateYEnd = finalHeight - 580;
+    const toumaX = 370;
 
-    // 雪菜
+    // 雪菜 position
     const setsunaAnimateYBegin = finalHeight - 566;
     const setsunaAnimateYEnd = finalHeight - 510;
+    const setsunaX = 40;
 
-    // logo
+    // logo position
     const logoY = finalHeight / 2 - 460;
+    const logoX = 50;
 
+    // 开始button position
+    const startX = 280;
+    const startY = finalHeight / 2 - 120;
+
+    // 椭圆
+    const ellipseX = 90;
+    const ellipseY = 44;
 
     // 开场动画
     const gameBeginScene = new Container();
@@ -158,15 +146,16 @@ class WhiteAlbumApp {
 
     gameBeginScene.alpha = 0;
 
+    // logo
     const logo = new Sprite(loader.resources['logo'].texture);
     gameBeginScene.addChild(logo);
-    logo.x = 50;
+    logo.x = logoX;
     logo.y = logoY;
 
     // 东马和snow的container
     const toumaContainer = new Container();
     gameBeginScene.addChild(toumaContainer);
-    toumaContainer.x = 370;
+    toumaContainer.x = toumaX;
     toumaContainer.y = toumaAnimateYBegin;
 
     // 冬马Sprite
@@ -201,13 +190,13 @@ class WhiteAlbumApp {
       });
 
       // chrome限制不能自动播放背景音乐，需要用户手动触发
-      this.playBgm();
+      // this.playBgm();
     })
 
     // 雪菜和snow的container
     const setsunaContainer = new Container();
     gameBeginScene.addChild(setsunaContainer);
-    setsunaContainer.x = 40;
+    setsunaContainer.x = setsunaX;
     setsunaContainer.y = setsunaAnimateYBegin;
 
     // 雪菜Sprite
@@ -241,14 +230,47 @@ class WhiteAlbumApp {
         }
       });
       // chrome限制不能自动播放背景音乐，需要用户手动触发
-      this.playBgm();
+      // this.playBgm();
     })
 
+    // 开始按钮
+    const startButtonContainer = new Container();
+    gameBeginScene.addChild(startButtonContainer);
+    startButtonContainer.x = startX;
+    startButtonContainer.y = startY;
+
+    startButtonContainer.interactive = true;
+    startButtonContainer.buttonMode = true;
+    startButtonContainer.on('tap', () => {
+      console.log('game start');
+    });
+
+    // 椭圆
+    const ellipse = new Graphics();
+    ellipse.beginTextureFill(gradient('#3BC1E3', '#fff', 160, 20))
+    ellipse.drawEllipse(0, 0, 160, 20);
+    ellipse.endFill();
+    ellipse.x = ellipseX;
+    ellipse.y = ellipseY;
+    ellipse.alpha = 0.5;
+    startButtonContainer.addChild(ellipse);
+
+    // 开始文字
+    const style = new TextStyle({
+      fill: 'white',
+      fontFamily: '-apple-system,PingFang SC,Helvetica Neue,STHeiti,Microsoft Yahei,Tahoma,Simsun,sans-serif;',
+      fontSize: 45,
+      stroke: "#2b3f56",
+      strokeThickness: 8
+    });
+    const text = new Text('开始游戏', style);
+    startButtonContainer.addChild(text);
+    text.position.set(0, 0);
+
+    // 进场初始动画
     TweenMax.to(setsunaContainer, 1, { y: setsunaAnimateYEnd, delay: 0.5 });
     TweenMax.to(toumaContainer, 1, { y: toumaAnimateYEnd, delay: 0.5 });
-    // 透明度使用线性缓动
     TweenMax.to(gameBeginScene, 1, { alpha: 1, ease: Power0.easeNone, delay: 0.5 });
-
     TweenMax.fromTo(toumaSnow, 1.2, { alpha: 0 }, { alpha: 1, repeat: -1, yoyo: true, delay: 1.5 });
   }
 

@@ -1,9 +1,10 @@
 /**
- * 雪花动态背景
+ * 雪花粒子背景
+ * https://codepen.io/cojdev/pen/JEdYGP
  */
 
-import * as PIXI from 'pixi.js';
-import SnowPoint  from './snowPoint';
+import { Graphics } from 'pixi.js';
+import SnowPoint from './snowPoint';
 
 export default class SnowFallBackground {
   constructor({ width, height, amount, maxDist, parent }) {
@@ -33,7 +34,7 @@ export default class SnowFallBackground {
   render() {
     const { parent, snowPointsArr, circleArr } = this;
     snowPointsArr.forEach((obj) => {
-      let circle = new PIXI.Graphics();
+      let circle = new Graphics();
       circle.beginFill(0xFFFFFF, obj.alpha);
       circle.drawCircle(0, 0, obj.dia);
       circle.endFill();
