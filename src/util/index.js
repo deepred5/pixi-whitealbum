@@ -37,13 +37,13 @@ export function createtriangle(xPos, yPos, color = 0xFFFFFF) {
  * @param {*} width 
  * @param {*} height 
  */
-export function gradient(from, to, width, height) {
+export function gradient(from, to) {
   const c = document.createElement("canvas");
   const ctx = c.getContext("2d");
-  const grd = ctx.createLinearGradient(0, 0, 0, height);
+  const grd = ctx.createLinearGradient(0, 0, 0, 500);
   grd.addColorStop(0, from);
   grd.addColorStop(0.8, to);
   ctx.fillStyle = grd;
-  ctx.fillRect(0, 0, width, height);
+  ctx.fillRect(0, 0, 500, 500);
   return new Texture.from(c);
 }

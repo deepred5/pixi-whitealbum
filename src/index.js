@@ -59,7 +59,7 @@ class WhiteAlbumApp {
 
   setup() {
     this.loadingDom.style.display = 'none';
-    // this.playBgm();
+    this.playBgm();
     document.body.appendChild(this.app.view);
     this.createRootContainer();
     this.createSnowContainer();
@@ -243,11 +243,12 @@ class WhiteAlbumApp {
     startButtonContainer.buttonMode = true;
     startButtonContainer.on('tap', () => {
       console.log('game start');
+      alert('为什么你会那么熟练啊!');
     });
 
     // 椭圆
     const ellipse = new Graphics();
-    ellipse.beginTextureFill(gradient('#3BC1E3', '#fff', 160, 20))
+    ellipse.beginTextureFill(gradient('#3BC1E3', '#fff'))
     ellipse.drawEllipse(0, 0, 160, 20);
     ellipse.endFill();
     ellipse.x = ellipseX;
