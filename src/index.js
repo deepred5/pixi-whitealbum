@@ -9,6 +9,8 @@ import setsunaImg from '../assets/setsuna.png';
 import toumaImg from '../assets/touma.png';
 import snowImg from '../assets/snow.png';
 import logoImg from '../assets/wa2_tv.png';
+import dialogImg from '../assets/dialog.png';
+import choiceImg from '../assets/choice.png';
 import bgm from '../assets/bgm.mp3';
 
 import './styles/global.scss';
@@ -57,6 +59,8 @@ class WhiteAlbumApp {
       .add('touma', toumaImg)
       .add('snow', snowImg)
       .add('logo', logoImg)
+      .add('dialog', dialogImg)
+      .add('choice', choiceImg)
       .add('bgm', bgm)
       .on("progress", this.loadProgressHandler.bind(this))
       .load(this.setup.bind(this));
@@ -128,9 +132,9 @@ class WhiteAlbumApp {
   }
 
   initStory(goddess) {
-    const { gameBeginScene, rootContainer, snowFallScene, originWidth } = this;
+    const { gameBeginScene, rootContainer, snowFallScene, originWidth, finalHeight } = this;
 
-    const storyScene = new StoryScene(originWidth, goddess, snowFallScene, gameBeginScene);
+    const storyScene = new StoryScene({ originWidth, finalHeight, goddess, snowFallScene, gameBeginScene, loader });
     rootContainer.addChild(storyScene.rootContainer);
     this.storyScene = StoryScene;
   }
