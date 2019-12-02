@@ -24,7 +24,8 @@ class WhiteAlbumApp {
     this.screenScaleRito = this.clientWidth / this.originWidth;
     this.finalHeight = this.clientHeight / this.screenScaleRito;
 
-    this.loadingDom = document.querySelector('.loading');
+    this.loadingDom = document.querySelector('.loading-container');
+    this.loadingCurrent = document.querySelector('.loading-current');
 
     this.snowPointArr = [];
 
@@ -54,7 +55,13 @@ class WhiteAlbumApp {
       .add('snow', snowImg)
       .add('logo', logoImg)
       .add('bgm', bgm)
+      .on("progress", this.loadProgressHandler.bind(this))
       .load(this.setup.bind(this));
+  }
+
+  loadProgressHandler(loader) {
+    // 进度条动画
+    this.loadingCurrent.style.width = `${loader.progress}%`;
   }
 
   setup() {

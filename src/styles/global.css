@@ -5,7 +5,7 @@ body {
   background: #000;
 }
 
-.loading {
+.loading-icon {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -15,7 +15,22 @@ body {
   width: 2em;
   height: 2em;
   animation: rotate 2s infinite;
+}
 
+.loading-progress {
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100px;
+  height: 3px;
+  background-color: rgba(255, 255, 255, 0.3)
+}
+
+.loading-current {
+  width: 0%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 1)
 }
 
 @keyframes rotate {
