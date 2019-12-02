@@ -1,9 +1,10 @@
-import { Application, Container, Loader, Sprite, Text, TextStyle, Graphics } from 'pixi.js';
+import { Application, Container, Loader, Sprite, Text, TextStyle, Graphics, filters } from 'pixi.js';
 import sound from 'pixi-sound';
 import { TweenMax, Power0 } from "gsap/all";
 
 import SnowFallScene from './scene/snowFallScene';
 import GameBeginScene from './scene/gameBeginScene';
+import StoryScene from './scene/storyScene';
 
 import setsunaImg from '../assets/setsuna.png';
 import toumaImg from '../assets/touma.png';
@@ -85,7 +86,7 @@ class WhiteAlbumApp {
   }
 
   playBgm() {
-     // chrome限制不能自动播放背景音乐，需要用户手动触发
+    // chrome限制不能自动播放背景音乐，需要用户手动触发
     if (!loader.resources['bgm'].sound.isPlaying) {
       sound.play('bgm', { loop: true });
     }
@@ -128,28 +129,11 @@ class WhiteAlbumApp {
   }
 
   initStory(goddess) {
-    const { gameBeginScene, rootContainer, originWidth } = this;
+    const { gameBeginScene, rootContainer, snowFallScene, originWidth } = this;
 
-    const storyContainer = new Container();
-    rootContainer.addChild(storyContainer);
-
-    storyContainer.alpha = 0;
-
-    const style = new TextStyle({
-      fill: 'white',
-      fontFamily: '-apple-system,PingFang SC,Helvetica Neue,STHeiti,Microsoft Yahei,Tahoma,Simsun,sans-serif;',
-      fontSize: 45,
-      stroke: "#2b3f56",
-      strokeThickness: 8,
-      wordWrap: true,
-      wordWrapWidth: originWidth,
-      breakWords: true, // 中文强制换行
-    });
-    const text = new Text('那么我要选' + goddess, style);
-    storyContainer.addChild(text);
-
-    TweenMax.to(gameBeginScene.rootContainer, 0.5, { alpha: 0 });
-    TweenMax.to(storyContainer, 0.5, { alpha: 1 });
+    const storyScene = new StoryScene(originWidth, goddess, snowFallScene, gameBeginScene);
+    rootContainer.addChild(storyScene.rootContainer);
+    this.storyScene = StoryScene;
   }
 
 }
