@@ -1,4 +1,4 @@
-import { Container, Sprite, Text, TextStyle, filters } from 'pixi.js';
+import { Container, Text, TextStyle, filters } from 'pixi.js';
 import { TweenMax } from "gsap/all";
 
 export default class StoryScene {

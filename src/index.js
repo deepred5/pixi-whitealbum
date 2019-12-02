@@ -1,6 +1,5 @@
-import { Application, Container, Loader, Sprite, Text, TextStyle, Graphics, filters } from 'pixi.js';
+import { Application, Container, Loader } from 'pixi.js';
 import sound from 'pixi-sound';
-import { TweenMax, Power0 } from "gsap/all";
 
 import SnowFallScene from './scene/snowFallScene';
 import GameBeginScene from './scene/gameBeginScene';
@@ -12,7 +11,7 @@ import snowImg from '../assets/snow.png';
 import logoImg from '../assets/wa2_tv.png';
 import bgm from '../assets/bgm.mp3';
 
-import './styles/global.css';
+import './styles/global.scss';
 
 const loader = new Loader();
 
