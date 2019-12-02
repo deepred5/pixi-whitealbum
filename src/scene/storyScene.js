@@ -77,9 +77,9 @@ export default class StoryScene {
     choiceText2.y = -40;
 
     if (goddess === 'touma') {
-      choiceContainer.alpha = 0.5;
-    } else {
       choiceContainer2.alpha = 0.5;
+    } else {
+      choiceContainer.alpha = 0.5;
     }
 
     const style = new TextStyle({
