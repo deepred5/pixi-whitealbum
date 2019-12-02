@@ -29,6 +29,8 @@ class WhiteAlbumApp {
 
     this.snowPointArr = [];
 
+    this.goddess = 'touma';
+
     this.init();
 
   }
@@ -151,6 +153,7 @@ class WhiteAlbumApp {
     const gameBeginScene = new Container();
     rootContainer.addChild(gameBeginScene);
 
+    this.gameBeginScene = gameBeginScene;
     gameBeginScene.alpha = 0;
 
     // logo
@@ -181,6 +184,8 @@ class WhiteAlbumApp {
 
     touma.interactive = true;
     touma.on('tap', () => {
+      this.goddess = 'touma';
+
       TweenMax.to(toumaContainer, 0.8, { y: toumaAnimateYEnd });
       TweenMax.to(setsunaContainer, 0.8, { y: setsunaAnimateYEnd });
 
@@ -222,6 +227,9 @@ class WhiteAlbumApp {
 
     setsuna.interactive = true;
     setsuna.on('tap', () => {
+
+      this.goddess = 'setsuna';
+
       TweenMax.to(toumaContainer, 0.8, { y: toumaAnimateYBegin });
       TweenMax.to(setsunaContainer, 0.8, { y: setsunaAnimateYBegin });
 
@@ -249,13 +257,15 @@ class WhiteAlbumApp {
     startButtonContainer.interactive = true;
     startButtonContainer.buttonMode = true;
     startButtonContainer.on('tap', () => {
-      console.log('game start');
-      alert('为什么你会那么熟练啊!');
+      console.log(this.goddess);
+      this.initStory();
     });
 
     // 椭圆
     const ellipse = new Graphics();
-    ellipse.beginTextureFill(gradient('#3BC1E3', '#fff'))
+    ellipse.beginTextureFill({
+      texture: gradient('#3BC1E3', '#FFF')
+    })
     ellipse.drawEllipse(0, 0, 160, 20);
     ellipse.endFill();
     ellipse.x = ellipseX;
@@ -280,6 +290,32 @@ class WhiteAlbumApp {
     TweenMax.to(toumaContainer, 1, { y: toumaAnimateYEnd, delay: 0.5 });
     TweenMax.to(gameBeginScene, 1, { alpha: 1, ease: Power0.easeNone, delay: 0.5 });
     TweenMax.fromTo(toumaSnow, 1.2, { alpha: 0 }, { alpha: 1, repeat: -1, yoyo: true, delay: 1.5 });
+  }
+
+  initStory() {
+    const { gameBeginScene, snowContainer, rootContainer, goddess, originWidth } = this;
+    // snowContainer.visible = false;
+
+    const storyContainer = new Container();
+    rootContainer.addChild(storyContainer);
+
+    storyContainer.alpha = 0;
+
+    const style = new TextStyle({
+      fill: 'white',
+      fontFamily: '-apple-system,PingFang SC,Helvetica Neue,STHeiti,Microsoft Yahei,Tahoma,Simsun,sans-serif;',
+      fontSize: 45,
+      stroke: "#2b3f56",
+      strokeThickness: 8,
+      wordWrap: true,
+      wordWrapWidth: originWidth,
+      breakWords: true, // 中文强制换行
+    });
+    const text = new Text('那么我要选' + goddess, style);
+    storyContainer.addChild(text);
+
+    TweenMax.to(gameBeginScene, 0.5, { alpha: 0 });
+    TweenMax.to(storyContainer, 0.5, { alpha: 1 });
   }
 
 }
