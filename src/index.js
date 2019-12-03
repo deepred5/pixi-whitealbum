@@ -1,9 +1,10 @@
-import { Application, Container, Loader } from 'pixi.js';
+import { Application, Container } from 'pixi.js';
 import sound from 'pixi-sound';
 
 import SnowFallScene from './scene/snowFallScene';
 import GameBeginScene from './scene/gameBeginScene';
 import StoryScene from './scene/storyScene';
+import ToumaLineScene from './scene/toumaLineScene';
 
 import setsunaImg from '../assets/setsuna.png';
 import toumaImg from '../assets/touma.png';
@@ -89,6 +90,7 @@ class WhiteAlbumApp {
   }
 
   playBgm() {
+    // return;
     // chrome限制不能自动播放背景音乐，需要用户手动触发
     if (!loader.resources['bgm'].sound.isPlaying) {
       sound.play('bgm', { loop: true });
@@ -125,18 +127,38 @@ class WhiteAlbumApp {
   }
 
   initBeginScene() {
-    const { finalHeight, rootContainer } = this;
-    const gameBeginScene = new GameBeginScene(finalHeight, this.initStory.bind(this));
-    rootContainer.addChild(gameBeginScene.rootContainer);
+    const { finalHeight, rootContainer, initStory } = this;
+    const gameBeginScene = new GameBeginScene(finalHeight, initStory.bind(this));
+    rootContainer.addChild(gameBeginScene.container);
     this.gameBeginScene = gameBeginScene;
   }
 
   initStory(goddess) {
-    const { gameBeginScene, rootContainer, snowFallScene, originWidth, finalHeight } = this;
+    const { gameBeginScene, rootContainer, snowFallScene, originWidth, finalHeight, initToumaLine } = this;
 
-    const storyScene = new StoryScene({ width: originWidth, finalHeight, goddess, snowFallScene, gameBeginScene });
-    rootContainer.addChild(storyScene.rootContainer);
-    this.storyScene = StoryScene;
+    const storyScene = new StoryScene({
+      width: originWidth,
+      finalHeight,
+      goddess,
+      snowFallScene,
+      gameBeginScene,
+      callback: initToumaLine.bind(this)
+    });
+
+    rootContainer.addChild(storyScene.container);
+    this.storyScene = storyScene;
+  }
+
+  initToumaLine(goddess) {
+    const { originWidth, storyScene, rootContainer, finalHeight } = this;
+    if (goddess === 'touma') {
+      const toumaLineScene = new ToumaLineScene({ width: originWidth, storyScene, finalHeight });
+      rootContainer.addChild(toumaLineScene.container);
+    }
+  }
+
+  get container() {
+    return this.rootContainer;
   }
 
 }

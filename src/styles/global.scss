@@ -8,7 +8,7 @@ body {
 .loading-container {
   .loading-icon {
     position: absolute;
-    top: 50%;
+    top: 48%;
     left: 50%;
     transform: translate(-50%, -50%);
     background: url(../../assets/snow.png);
@@ -20,7 +20,7 @@ body {
 
   .loading-progress {
     position: absolute;
-    top: 55%;
+    top: 53%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 100px;

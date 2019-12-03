@@ -5,14 +5,27 @@ import ChoiceButton from '../components/choiceButton';
 import { loader } from '../loader';
 
 export default class StoryScene {
-  constructor({ width, goddess, snowFallScene, gameBeginScene, finalHeight }) {
+  constructor({ width, goddess, snowFallScene, gameBeginScene, finalHeight, callback }) {
     this.rootContainer = new Container();
     this.goddess = goddess;
     this.snowFallScene = snowFallScene;
     this.gameBeginScene = gameBeginScene;
     this.width = width;
     this.finalHeight = finalHeight;
+    this.callback = callback;
     this.render();
+    this.bindEvent();
+  }
+
+  bindEvent() {
+    const { toumaButton, setsunaButton, goddess, callback } = this;
+
+    const button = goddess === 'touma' ? toumaButton : setsunaButton;
+
+    button.interactive = true;
+    button.on('tap', () => {
+      callback(goddess);
+    });
   }
 
   render() {
@@ -34,6 +47,7 @@ export default class StoryScene {
     storyContainer.addChild(button1.container);
     button1.container.x = 100;
     button1.container.y = 310;
+    this.toumaButton = button1.container;
 
     const button2 = new ChoiceButton({
       text: '2. 去新年参拜',
@@ -44,6 +58,7 @@ export default class StoryScene {
     storyContainer.addChild(button2.container);
     button2.container.x = 100;
     button2.container.y = 460;
+    this.setsunaButton = button2.container;
 
 
     if (goddess === 'touma') {
