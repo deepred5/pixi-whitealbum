@@ -134,7 +134,7 @@ class WhiteAlbumApp {
   initStory(goddess) {
     const { gameBeginScene, rootContainer, snowFallScene, originWidth, finalHeight } = this;
 
-    const storyScene = new StoryScene({ originWidth, finalHeight, goddess, snowFallScene, gameBeginScene, loader });
+    const storyScene = new StoryScene({ width: originWidth, finalHeight, goddess, snowFallScene, gameBeginScene, loader });
     rootContainer.addChild(storyScene.rootContainer);
     this.storyScene = StoryScene;
   }

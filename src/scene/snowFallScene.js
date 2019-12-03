@@ -1,5 +1,5 @@
 import { Container } from 'pixi.js';
-import SnowFallBackground from '../snow/snowFall';
+import SnowFallBackground from '../components/snow/snowFall';
 
 /**
  * 雪花粒子场景

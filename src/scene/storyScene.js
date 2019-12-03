@@ -1,6 +1,8 @@
 import { Container, Text, TextStyle, filters, Sprite } from 'pixi.js';
 import { TweenMax } from "gsap/all";
 
+import ChoiceButton from '../components/choiceButton';
+
 export default class StoryScene {
   constructor({ width, goddess, snowFallScene, gameBeginScene, loader, finalHeight }) {
     this.rootContainer = new Container();
@@ -23,63 +25,31 @@ export default class StoryScene {
     dialog.x = 50;
     dialog.scale.set(0.7, 0.7);
 
-    const choiceContainer = new Container();
-    storyContainer.addChild(choiceContainer);
-    choiceContainer.y = 310;
-    choiceContainer.x = 100;
-    choiceContainer.scale.set(1.2, 1.2)
-
-    const choice = new Sprite(loader.resources['choice'].texture);
-    choiceContainer.addChild(choice);
-    choice.x = 0;
-    choice.y = 0;
-    choice.scale.set(0.7, 1);
-    choice.skew.x = -10;
-
-    const style1 = new TextStyle({
-      fill: 'white',
-      fontFamily: '-apple-system,PingFang SC,Helvetica Neue,STHeiti,Microsoft Yahei,Tahoma,Simsun,sans-serif;',
-      fontSize: 30,
-      wordWrap: true,
-      wordWrapWidth: width,
-      breakWords: true,
+    const button1 = new ChoiceButton({
+      text: '1. 去音乐会',
+      x: 160,
+      y: -40,
+      loader,
     });
-    const choiceText1 = new Text('1. 去音乐会', style1);
-    choiceContainer.addChild(choiceText1);
-    choiceText1.x = 160;
-    choiceText1.y = -40;
+    storyContainer.addChild(button1.container);
+    button1.container.x = 100;
+    button1.container.y = 310;
 
-    // 
-    const choiceContainer2 = new Container();
-    storyContainer.addChild(choiceContainer2);
-    choiceContainer2.y = 460;
-    choiceContainer2.x = 100;
-    choiceContainer2.scale.set(1.2, 1.2);
-
-    const choice2 = new Sprite(loader.resources['choice'].texture);
-    choiceContainer2.addChild(choice2);
-    choice2.x = 0;
-    choice2.y = 0;
-    choice2.scale.set(0.7, 1);
-    choice2.skew.x = -10;
-
-    const style2 = new TextStyle({
-      fill: 'white',
-      fontFamily: '-apple-system,PingFang SC,Helvetica Neue,STHeiti,Microsoft Yahei,Tahoma,Simsun,sans-serif;',
-      fontSize: 30,
-      wordWrap: true,
-      wordWrapWidth: width,
-      breakWords: true,
+    const button2 = new ChoiceButton({
+      text: '2. 去新年参拜',
+      x: 140,
+      y: -40,
+      loader,
     });
-    const choiceText2 = new Text('2. 去新年参拜', style2);
-    choiceContainer2.addChild(choiceText2);
-    choiceText2.x = 140;
-    choiceText2.y = -40;
+    storyContainer.addChild(button2.container);
+    button2.container.x = 100;
+    button2.container.y = 460;
+
 
     if (goddess === 'touma') {
-      choiceContainer2.alpha = 0.5;
+      button2.container.alpha = 0.4;
     } else {
-      choiceContainer.alpha = 0.5;
+      button1.container.alpha = 0.4;
     }
 
     const style = new TextStyle({
@@ -95,11 +65,16 @@ export default class StoryScene {
     text.x = 300;
     text.y = finalHeight - 110;
 
-    TweenMax.to(gameBeginScene.rootContainer, 0.5, { alpha: 0 });
-    TweenMax.to(storyContainer, 0.5, { alpha: 1 });
-
     const blurFilter = new filters.BlurFilter();
     blurFilter.blur = 4;
     snowFallScene.rootContainer.filters = [blurFilter];
+
+    this.initBeginAnima();
+  }
+
+  initBeginAnima() {
+    const { gameBeginScene, rootContainer } = this;
+    TweenMax.to(gameBeginScene.rootContainer, 0.5, { alpha: 0 });
+    TweenMax.to(rootContainer, 0.8, { alpha: 1 });
   }
 }
