@@ -77,4 +77,8 @@ export default class StoryScene {
     TweenMax.to(gameBeginScene.rootContainer, 0.5, { alpha: 0 });
     TweenMax.to(rootContainer, 0.8, { alpha: 1 });
   }
+
+  get container() {
+    return this.rootContainer;
+  }
 }

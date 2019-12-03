@@ -32,6 +32,10 @@ class SnowFallScene {
   tick() {
     this.snowFallBackground.tick();
   }
+
+  get container() {
+    return this.rootContainer;
+  }
 }
 
 export default SnowFallScene;

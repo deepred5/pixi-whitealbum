@@ -218,4 +218,8 @@ export default class GameBeginScene {
     TweenMax.to(gameBeginScene, 1, { alpha: 1, ease: Power0.easeNone, delay: 0.5 });
     TweenMax.fromTo(toumaSnow, 1.2, { alpha: 0 }, { alpha: 1, repeat: -1, yoyo: true, delay: 1.5 });
   }
+
+  get container() {
+    return this.rootContainer;
+  }
 }
