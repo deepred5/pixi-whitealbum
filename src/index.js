@@ -15,7 +15,7 @@ import bgm from '../assets/bgm.mp3';
 
 import './styles/global.scss';
 
-const loader = new Loader();
+import { loader } from './loader';
 
 class WhiteAlbumApp {
   constructor() {
@@ -66,7 +66,7 @@ class WhiteAlbumApp {
       .load(this.setup.bind(this));
   }
 
-  loadProgressHandler(loader) {
+  loadProgressHandler() {
     // 进度条动画
     this.loadingCurrent.style.width = `${loader.progress}%`;
   }
@@ -126,7 +126,7 @@ class WhiteAlbumApp {
 
   initBeginScene() {
     const { finalHeight, rootContainer } = this;
-    const gameBeginScene = new GameBeginScene(finalHeight, loader, this.initStory.bind(this));
+    const gameBeginScene = new GameBeginScene(finalHeight, this.initStory.bind(this));
     rootContainer.addChild(gameBeginScene.rootContainer);
     this.gameBeginScene = gameBeginScene;
   }
@@ -134,7 +134,7 @@ class WhiteAlbumApp {
   initStory(goddess) {
     const { gameBeginScene, rootContainer, snowFallScene, originWidth, finalHeight } = this;
 
-    const storyScene = new StoryScene({ width: originWidth, finalHeight, goddess, snowFallScene, gameBeginScene, loader });
+    const storyScene = new StoryScene({ width: originWidth, finalHeight, goddess, snowFallScene, gameBeginScene });
     rootContainer.addChild(storyScene.rootContainer);
     this.storyScene = StoryScene;
   }

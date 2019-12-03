@@ -2,21 +2,21 @@ import { Container, Text, TextStyle, filters, Sprite } from 'pixi.js';
 import { TweenMax } from "gsap/all";
 
 import ChoiceButton from '../components/choiceButton';
+import { loader } from '../loader';
 
 export default class StoryScene {
-  constructor({ width, goddess, snowFallScene, gameBeginScene, loader, finalHeight }) {
+  constructor({ width, goddess, snowFallScene, gameBeginScene, finalHeight }) {
     this.rootContainer = new Container();
     this.goddess = goddess;
     this.snowFallScene = snowFallScene;
     this.gameBeginScene = gameBeginScene;
     this.width = width;
-    this.loader = loader;
     this.finalHeight = finalHeight;
     this.render();
   }
 
   render() {
-    const { rootContainer: storyContainer, snowFallScene, gameBeginScene, width, goddess, loader, finalHeight } = this;
+    const { rootContainer: storyContainer, snowFallScene, width, goddess, finalHeight } = this;
     storyContainer.alpha = 0;
 
     const dialog = new Sprite(loader.resources['dialog'].texture);

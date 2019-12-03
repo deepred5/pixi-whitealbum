@@ -1,15 +1,15 @@
 import { Container, Sprite, Text, TextStyle, Graphics } from 'pixi.js';
 import { TweenMax, Power0 } from "gsap/all";
 import { gradient } from '../util';
+import { loader } from '../loader';
 
 /**
  * 入场动画场景
  */
 export default class GameBeginScene {
-  constructor(finalHeight, loader, callback) {
+  constructor(finalHeight, callback) {
     this.rootContainer = new Container();
     this.finalHeight = finalHeight;
-    this.loader = loader;
     this.callback = callback;
     this.goddess = 'touma';
 
@@ -85,7 +85,7 @@ export default class GameBeginScene {
   }
 
   render() {
-    const { loader, finalHeight, rootContainer: gameBeginScene } = this;
+    const { finalHeight, rootContainer: gameBeginScene } = this;
 
     // 冬马 position
     const toumaAnimateYBegin = finalHeight - 550;
