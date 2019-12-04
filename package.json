@@ -3,10 +3,12 @@
   "version": "1.0.0",
   "description": "whitealbum2",
   "scripts": {
-    "dev": "parcel public/index.html -p 8081",
-    "build": "parcel build public/index.html --no-source-maps --public-url ./",
+    "dev": "npm run clean && parcel public/index.html -p 8081",
+    "build": "npm run clean && parcel build public/index.html --no-source-maps --public-url ./",
     "prebuild": "echo ❄️❄️❄️又到了白色相簿的季节❄️❄️❄️ && rimraf dist",
-    "postbuild": "echo ❄️❄️❄️你为什么那么熟练啊❄️❄️❄️"
+    "postbuild": "echo ❄️❄️❄️你为什么那么熟练啊❄️❄️❄️",
+    "clean": "rimraf ./dist ./.cache",
+    "build_serve": "npm run build && http-server ./dist -c-1"
   },
   "keywords": [
     "白色相簿2",
@@ -25,6 +27,7 @@
   },
   "devDependencies": {
     "autoprefixer": "^9.7.2",
+    "http-server": "^0.12.0",
     "parcel-bundler": "^1.12.4",
     "rimraf": "^3.0.0",
     "sass": "^1.23.7"
