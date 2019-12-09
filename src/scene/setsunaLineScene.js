@@ -35,12 +35,12 @@ export default class SetsunaLineScene {
         y: 550
       },
       {
-        content: '而正当我们在热闹的喧嚣中随波逐流的时候。',
+        content: '而正当我们在热闹的喧嚣中随波逐流的时候，',
         x: this.padding,
         y: 750
       },
       {
-        content: '新的一年造访了。',
+        content: '新的一年造访了！',
         x: this.padding,
         y: 850
       }
@@ -84,7 +84,8 @@ export default class SetsunaLineScene {
     mask.on('tap', () => {
       this.currentIndex += 1;
       if (this.currentIndex >= paragraphAmount) {
-        console.log('end')
+        console.log('end');
+        setTimeout(() => window.location.reload(), 500);
         return;
       }
       this.renderParagrap();
