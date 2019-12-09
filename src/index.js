@@ -5,6 +5,7 @@ import SnowFallScene from './scene/snowFallScene';
 import GameBeginScene from './scene/gameBeginScene';
 import StoryScene from './scene/storyScene';
 import ToumaLineScene from './scene/toumaLineScene';
+import SetsunaLineScene from './scene/setsunaLineScene';
 
 import setsunaImg from '../assets/setsuna.png';
 import toumaImg from '../assets/touma.png';
@@ -134,7 +135,7 @@ class WhiteAlbumApp {
   }
 
   initStory(goddess) {
-    const { gameBeginScene, rootContainer, snowFallScene, originWidth, finalHeight, initToumaLine } = this;
+    const { gameBeginScene, rootContainer, snowFallScene, originWidth, finalHeight, initLine } = this;
 
     const storyScene = new StoryScene({
       width: originWidth,
@@ -142,19 +143,31 @@ class WhiteAlbumApp {
       goddess,
       snowFallScene,
       gameBeginScene,
-      callback: initToumaLine.bind(this)
+      callback: initLine.bind(this),
     });
 
     rootContainer.addChild(storyScene.container);
     this.storyScene = storyScene;
   }
 
-  initToumaLine(goddess) {
-    const { originWidth, storyScene, rootContainer, finalHeight } = this;
+  initLine(goddess) {
     if (goddess === 'touma') {
-      const toumaLineScene = new ToumaLineScene({ width: originWidth, storyScene, finalHeight });
-      rootContainer.addChild(toumaLineScene.container);
+      this.initToumaLine();
+    } else if (goddess === 'setsuna') {
+      this.initSetsunaLine();
     }
+  }
+
+  initToumaLine() {
+    const { originWidth, storyScene, rootContainer, finalHeight } = this;
+    const toumaLineScene = new ToumaLineScene({ width: originWidth, storyScene, finalHeight });
+    rootContainer.addChild(toumaLineScene.container);
+  }
+
+  initSetsunaLine() {
+    const { originWidth, storyScene, rootContainer, finalHeight } = this;
+    const setsunaLineScene = new SetsunaLineScene({ width: originWidth, storyScene, finalHeight });
+    rootContainer.addChild(setsunaLineScene.container);
   }
 
   get container() {

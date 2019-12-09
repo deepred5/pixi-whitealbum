@@ -15,6 +15,8 @@ export default class GameBeginScene {
 
     this.render();
     this.bindEvent();
+
+    this.preClick = 'touma';
   }
 
   bindEvent() {
@@ -36,7 +38,11 @@ export default class GameBeginScene {
     // 冬马事件
     touma.interactive = true;
     touma.on('tap', () => {
+      if (this.preClick === 'touma') {
+        return;
+      }
       this.goddess = 'touma';
+      this.preClick = 'touma';
 
       TweenMax.to(toumaContainer, 0.8, { y: toumaAnimateYEnd });
       TweenMax.to(setsunaContainer, 0.8, { y: setsunaAnimateYEnd });
@@ -57,8 +63,11 @@ export default class GameBeginScene {
     // 雪菜事件
     setsuna.interactive = true;
     setsuna.on('tap', () => {
-
+      if (this.preClick === 'setsuna') {
+        return;
+      }
       this.goddess = 'setsuna';
+      this.preClick = 'setsuna';
 
       TweenMax.to(toumaContainer, 0.8, { y: toumaAnimateYBegin });
       TweenMax.to(setsunaContainer, 0.8, { y: setsunaAnimateYBegin });
