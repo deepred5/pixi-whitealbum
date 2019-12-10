@@ -96,8 +96,8 @@ export default class ToumaLineScene {
 
     const tipContainer = new Container();
     tipContainer.x =  width - 110;
-    tipContainer.y = finalHeight - 160;
-    toumaLineContainer.addChild(tipContainer);
+    tipContainer.y = finalHeight - 240;
+    mask.addChild(tipContainer);
 
     const text = new Paragraph({
       content: 'TOUCH',
@@ -121,6 +121,6 @@ export default class ToumaLineScene {
     const { storyScene, container, snow } = this;
     TweenMax.to(storyScene.container, 0.3, { alpha: 0 });
     TweenMax.to(container, 0.8, { alpha: 1 });
-    TweenMax.fromTo(snow, 1.2, { alpha: 1 }, { alpha: 0, repeat: -1, yoyo: true, delay: 1.5 });
+    TweenMax.fromTo(snow, 1, { alpha: 1 }, { alpha: 0, repeat: -1, yoyo: true, delay: 1.2 });
   }
 }
