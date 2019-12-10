@@ -13,50 +13,82 @@ export default class ToumaLineScene {
     this.finalHeight = finalHeight;
     this.padding = 20;
 
-    this.paragraphArr = [
+    this.currentPage = 0;
+    this.currentParaIndex = 0;
+    this.story = [
       {
-        content: '啊，怎么会这样，我竟不知不觉来到了音乐厅',
-        x: this.padding,
-        y: 100
+        paragraph: [
+          {
+            content: '我随着武也、伊绪走出了酒馆。车站外人流攒动，到处洋溢着节日的欢快。',
+            x: this.padding,
+            y: 100
+          },
+          {
+            content: '三年前的背叛。两年间的逃避。然后是一周前的谎言。脑海中挥之不去自己的罪过。',
+            x: this.padding,
+            y: 250
+          },
+          {
+            content: '然后，我突然注意到：我们不知何时，已经走到了御宿艺术文化大厅的门前。',
+            x: this.padding,
+            y: 400
+          },
+          {
+            content: '大批的人沿着大厅的楼梯走下。看来，音乐会好像刚刚结束。我望向手机的时钟，现在的时间是23时59分。',
+            x: this.padding,
+            y: 550
+          },
+          {
+            content: '而正当我们在热闹的喧嚣中随波逐流的时候，',
+            x: this.padding,
+            y: 750
+          },
+          {
+            content: '新的一年造访了！',
+            x: this.padding,
+            y: 850
+          }
+        ]
       },
       {
-        content: '666',
-        x: this.padding,
-        y: 200
+        paragraph: [
+          {
+            content: '第二段',
+            x: this.padding,
+            y: 100
+          }
+        ]
       },
       {
-        content: '啊，怎么会这样，我竟不知不觉来到了音乐啊，怎么会这样，我竟不知不觉来到了音乐啊，怎么会这样，我竟不知不觉来到了音乐啊，怎么会这样，我竟不知不觉来到了音乐',
-        x: this.padding,
-        y: 300
-      },
-      {
-        content: '啊，怎么会这样，我竟不知不觉来到了音乐啊，怎么会这样，我竟不知不觉来到了音乐啊，怎么会这样，我竟不知不觉来到了音乐啊，怎么会这样，我竟不知不觉来到了音乐',
-        x: this.padding,
-        y: 550
+        paragraph: [
+          {
+            content: '第3段',
+            x: this.padding,
+            y: 100
+          }
+        ]
       }
     ];
 
-    this.currentIndex = 0;
+    this.storyContainer = [];
 
+    this.initStoryContainer();
     this.render();
     this.bindEvent();
   }
 
-  get container() {
-    return this.rootContainer;
-  }
-
-  get paragraphAmount() {
-    return this.paragraphArr.length;
-  }
-
-  get wordWrapWidth() {
-    return this.width - this.padding;
+  initStoryContainer() {
+    for (let i = 0; i < this.story.length; i++) {
+      const temp = new Container();
+      temp.visible = false;
+      this.storyContainer.push(temp);
+    }
   }
 
   renderParagrap() {
-    const { currentIndex, paragraphArr, wordWrapWidth, mask } = this;
-    const paragraph = paragraphArr[currentIndex];
+    const { currentPage, currentParaIndex, story, wordWrapWidth, storyContainer } = this;
+    const paragraph = story[currentPage].paragraph[currentParaIndex];
+    const container = storyContainer[currentPage];
 
     const text = new Paragraph({
       content: paragraph.content,
@@ -64,25 +96,70 @@ export default class ToumaLineScene {
     });
     text.container.x = paragraph.x;
     text.container.y = paragraph.y;
-    mask.addChild(text.container);
+    text.container.alpha = 0;
+    container.addChild(text.container);
+
+    TweenMax.to(text.container, 0.5, { alpha: 1 });
+  }
+
+  get container() {
+    return this.rootContainer;
+  }
+
+  get wordWrapWidth() {
+    return this.width - this.padding;
+  }
+
+  get isStoryEnd() {
+    const { currentPage, story } = this;
+
+    if (currentPage === story.length - 1 && this.isCurrentPageEnd) {
+      return true;
+    }
+
+    return false;
+
+  }
+
+  get isCurrentPageEnd() {
+    const { currentPage, currentParaIndex, story } = this;
+
+    if (currentParaIndex === story[currentPage].paragraph.length) {
+      return true;
+    }
+
+    return false;
   }
 
   bindEvent() {
-    const { mask, paragraphAmount } = this;
+    const { mask, storyContainer } = this;
 
     mask.interactive = true;
+
     mask.on('tap', () => {
-      this.currentIndex += 1;
-      if (this.currentIndex >= paragraphAmount) {
-        console.log('end')
+      if (this.isStoryEnd) {
+        console.log('end');
         return;
       }
+
+      if (this.isCurrentPageEnd) {
+        storyContainer[this.currentPage].visible = false;
+        this.currentPage += 1;
+        this.currentParaIndex = 0;
+        storyContainer[this.currentPage].visible = true;
+      }
+
       this.renderParagrap();
-    })
+
+      this.currentParaIndex += 1;
+    });
+
+    // trigger触发一次tap
+    mask.emit('tap');
   }
 
   render() {
-    const { container: toumaLineContainer, width, finalHeight, wordWrapWidth } = this;
+    const { container: toumaLineContainer, width, finalHeight, wordWrapWidth, storyContainer, currentPage } = this;
     toumaLineContainer.alpha = 0;
 
     const mask = new Graphics();
@@ -112,7 +189,9 @@ export default class ToumaLineScene {
     tipContainer.addChild(snow);
     this.snow = snow;
 
-    this.renderParagrap();
+    storyContainer.forEach((item) => mask.addChild(item));
+
+    storyContainer[currentPage].visible = true;
 
     this.initBeginAnima();
   }

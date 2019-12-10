@@ -13,7 +13,9 @@ import snowImg from '../assets/snow.png';
 import logoImg from '../assets/wa2_tv.png';
 import dialogImg from '../assets/dialog.png';
 import choiceImg from '../assets/choice.png';
+import newYearImg from '../assets/new_year.jpg';
 import bgm from '../assets/bgm.mp3';
+import newYearBgm from '../assets/new_year.mp3';
 
 import './styles/global.scss';
 
@@ -63,7 +65,9 @@ class WhiteAlbumApp {
       .add('logo', logoImg)
       .add('dialog', dialogImg)
       .add('choice', choiceImg)
+      .add('newYear', newYearImg)
       .add('bgm', bgm)
+      .add('newYearBgm', newYearBgm)
       .on("progress", this.loadProgressHandler.bind(this))
       .load(this.setup.bind(this));
   }

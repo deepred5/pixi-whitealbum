@@ -1,5 +1,6 @@
-import { Container, Text, TextStyle, Graphics, Sprite } from 'pixi.js';
+import { Container, Graphics, Sprite } from 'pixi.js';
 import { TweenMax } from "gsap/all";
+import sound from 'pixi-sound';
 
 import Paragraph from '../components/paragraph';
 
@@ -50,24 +51,6 @@ export default class SetsunaLineScene {
           }
         ]
       },
-      {
-        paragraph: [
-          {
-            content: '第二段',
-            x: this.padding,
-            y: 100
-          }
-        ]
-      },
-      {
-        paragraph: [
-          {
-            content: '第3段',
-            x: this.padding,
-            y: 100
-          }
-        ]
-      }
     ];
 
     this.storyContainer = [];
@@ -142,7 +125,7 @@ export default class SetsunaLineScene {
 
     mask.on('tap', () => {
       if (this.isStoryEnd) {
-        console.log('end');
+        this.endStory();
         return;
       }
 
@@ -160,6 +143,31 @@ export default class SetsunaLineScene {
 
     // trigger触发一次tap
     mask.emit('tap');
+  }
+
+  endStory() {
+    console.log('end');
+    TweenMax.to(this.mask, 0.5, {
+      alpha: 0
+    });
+
+    TweenMax.to(this.newYear, 0.5, {
+      alpha: 1
+    });
+
+    if (!loader.resources['newYearBgm'].sound.isPlaying) {
+      // 背景音乐放小
+      sound.volume('bgm', 0.6);
+
+      sound.play('newYearBgm', {
+        volume: 1.2,
+        complete: function () {
+          console.log('Sound finished');
+          // 还原背景音乐
+          sound.volume('bgm', 1);
+        }
+      });
+    }
   }
 
   render() {
@@ -193,9 +201,16 @@ export default class SetsunaLineScene {
     tipContainer.addChild(snow);
     this.snow = snow;
 
+    const newYear = new Sprite(loader.resources['newYear'].texture);
+    setsunaLineContainer.addChild(newYear);
+    newYear.alpha = 0;
+    newYear.y = (finalHeight - 450) / 2 - 20;
+    this.newYear = newYear;
+
     storyContainer.forEach((item) => mask.addChild(item));
 
     storyContainer[currentPage].visible = true;
+
 
     this.initBeginAnima();
   }
