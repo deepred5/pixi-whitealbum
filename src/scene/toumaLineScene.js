@@ -198,7 +198,7 @@ export default class ToumaLineScene {
 
   initBeginAnima() {
     const { storyScene, container, snow } = this;
-    TweenMax.to(storyScene.container, 0.3, { alpha: 0 });
+    TweenMax.to(storyScene.container, 0.3, { alpha: 0, visible: false });
     TweenMax.to(container, 0.8, { alpha: 1 });
     TweenMax.fromTo(snow, 1, { alpha: 1 }, { alpha: 0, repeat: -1, yoyo: true, delay: 1.2 });
   }

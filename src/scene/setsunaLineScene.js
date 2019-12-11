@@ -7,12 +7,13 @@ import Paragraph from '../components/paragraph';
 import { loader } from '../loader';
 
 export default class SetsunaLineScene {
-  constructor({ storyScene, width, finalHeight }) {
+  constructor({ storyScene, width, finalHeight, callback }) {
     this.rootContainer = new Container();
     this.storyScene = storyScene;
     this.width = width;
     this.finalHeight = finalHeight;
     this.padding = 20;
+    this.callback = callback;
 
     this.currentPage = 0;
     this.currentParaIndex = 0;
@@ -22,33 +23,49 @@ export default class SetsunaLineScene {
           {
             content: '我随着武也、伊绪走出了酒馆。车站外人流攒动，到处洋溢着节日的欢快。',
             x: this.padding,
-            y: 100
+            y: 60
           },
           {
             content: '三年前的背叛。两年间的逃避。然后是一周前的谎言。脑海中挥之不去自己的罪过。',
             x: this.padding,
-            y: 250
+            y: 210
           },
           {
             content: '然后，我突然注意到：我们不知何时，已经走到了御宿艺术文化大厅的门前。',
             x: this.padding,
-            y: 400
+            y: 360
           },
           {
             content: '大批的人沿着大厅的楼梯走下。看来，音乐会好像刚刚结束。我望向手机的时钟，现在的时间是23时59分。',
             x: this.padding,
-            y: 550
+            y: 510
           },
           {
             content: '而正当我们在热闹的喧嚣中随波逐流的时候，',
             x: this.padding,
-            y: 750
+            y: 710
           },
           {
             content: '新的一年造访了！',
             x: this.padding,
-            y: 850
+            y: 810
           }
+        ]
+      },
+      {
+        paragraph: [
+          {
+            content: '呐，你还好吗?',
+            x: this.padding,
+            y: 300,
+            bgm: 'touma1Bgm'
+          },
+          {
+            content: '新年快乐。今年也多多关照啊！',
+            x: this.padding,
+            y: 480,
+            bgm: 'touma2Bgm'
+          },
         ]
       },
     ];
@@ -93,6 +110,16 @@ export default class SetsunaLineScene {
     return false;
   }
 
+  get isFirstPageEnd() {
+    const { currentPage } = this;
+
+    if (currentPage === 0 && this.isCurrentPageEnd) {
+      return true;
+    }
+
+    return false;
+  }
+
   initStoryContainer() {
     for (let i = 0; i < this.story.length; i++) {
       const temp = new Container();
@@ -105,6 +132,12 @@ export default class SetsunaLineScene {
     const { currentPage, currentParaIndex, story, wordWrapWidth, storyContainer } = this;
     const paragraph = story[currentPage].paragraph[currentParaIndex];
     const container = storyContainer[currentPage];
+
+    if (paragraph.bgm) {
+      sound.play(paragraph.bgm, {
+        volume: 2.5,
+      });
+    }
 
     const text = new Paragraph({
       content: paragraph.content,
@@ -124,8 +157,15 @@ export default class SetsunaLineScene {
     mask.interactive = true;
 
     mask.on('tap', () => {
+
+      if (this.isFirstPageEnd) {
+        this.showNewYear();
+        return;
+      }
+
       if (this.isStoryEnd) {
-        this.endStory();
+        console.log('isStoryEnd');
+        this.callback(this.container);
         return;
       }
 
@@ -145,8 +185,8 @@ export default class SetsunaLineScene {
     mask.emit('tap');
   }
 
-  endStory() {
-    console.log('end');
+  showNewYear() {
+    console.log('showNewYear');
     TweenMax.to(this.mask, 0.5, {
       alpha: 0
     });
@@ -157,14 +197,30 @@ export default class SetsunaLineScene {
 
     if (!loader.resources['newYearBgm'].sound.isPlaying) {
       // 背景音乐放小
-      sound.volume('bgm', 0.6);
+      sound.volume('bgm', 0.5);
 
       sound.play('newYearBgm', {
-        volume: 1.2,
-        complete: function () {
+        volume: 1.3,
+        complete: () => {
           console.log('Sound finished');
           // 还原背景音乐
           sound.volume('bgm', 1);
+
+          TweenMax.to(this.mask, 0.5, {
+            alpha: 0.8
+          });
+
+          TweenMax.to(this.newYear, 0.5, {
+            alpha: 0,
+            complete: () => {
+              this.newYear.visible = false;
+              this.storyContainer[this.currentPage].visible = false;
+              this.currentPage += 1;
+              this.currentParaIndex = 0;
+              this.storyContainer[this.currentPage].visible = true;
+              this.mask.emit('tap');
+            }
+          });
         }
       });
     }
@@ -217,7 +273,7 @@ export default class SetsunaLineScene {
 
   initBeginAnima() {
     const { storyScene, container, snow } = this;
-    TweenMax.to(storyScene.container, 0.3, { alpha: 0 });
+    TweenMax.to(storyScene.container, 0.3, { alpha: 0, visible: false });
     TweenMax.to(container, 0.8, { alpha: 1 });
     TweenMax.fromTo(snow, 1, { alpha: 1 }, { alpha: 0, repeat: -1, yoyo: true, delay: 1.2 });
   }

@@ -89,7 +89,11 @@ export default class StoryScene {
 
   initBeginAnima() {
     const { gameBeginScene, rootContainer } = this;
-    TweenMax.to(gameBeginScene.rootContainer, 0.5, { alpha: 0 });
+    TweenMax.to(gameBeginScene.rootContainer, 0.5, { 
+      alpha: 0,
+      // 一定要加 visible: false，否则只是透明度为0但是仍可以点击！！！
+      visible: false 
+     });
     TweenMax.to(rootContainer, 0.8, { alpha: 1 });
   }
 

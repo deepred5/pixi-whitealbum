@@ -6,16 +6,20 @@ import GameBeginScene from './scene/gameBeginScene';
 import StoryScene from './scene/storyScene';
 import ToumaLineScene from './scene/toumaLineScene';
 import SetsunaLineScene from './scene/setsunaLineScene';
+import GameEndScene from './scene/gameEndScene';
 
 import setsunaImg from '../assets/setsuna.png';
 import toumaImg from '../assets/touma.png';
 import snowImg from '../assets/snow.png';
+import snow2Img from '../assets/snow2.png';
 import logoImg from '../assets/wa2_tv.png';
 import dialogImg from '../assets/dialog.png';
 import choiceImg from '../assets/choice.png';
 import newYearImg from '../assets/new_year.jpg';
 import bgm from '../assets/bgm.mp3';
 import newYearBgm from '../assets/new_year.mp3';
+import touma1Bgm from '../assets/touma1.mp3';
+import touma2Bgm from '../assets/touma2.mp3';
 
 import './styles/global.scss';
 
@@ -62,12 +66,15 @@ class WhiteAlbumApp {
       .add('setsuna', setsunaImg)
       .add('touma', toumaImg)
       .add('snow', snowImg)
+      .add('snow2', snow2Img)
       .add('logo', logoImg)
       .add('dialog', dialogImg)
       .add('choice', choiceImg)
       .add('newYear', newYearImg)
       .add('bgm', bgm)
       .add('newYearBgm', newYearBgm)
+      .add('touma1Bgm', touma1Bgm)
+      .add('touma2Bgm', touma2Bgm)
       .on("progress", this.loadProgressHandler.bind(this))
       .load(this.setup.bind(this));
   }
@@ -163,15 +170,33 @@ class WhiteAlbumApp {
   }
 
   initToumaLine() {
-    const { originWidth, storyScene, rootContainer, finalHeight } = this;
-    const toumaLineScene = new ToumaLineScene({ width: originWidth, storyScene, finalHeight });
+    const { originWidth, storyScene, rootContainer, finalHeight, initEndScene } = this;
+    const toumaLineScene = new ToumaLineScene({
+      width: originWidth,
+      storyScene,
+      finalHeight,
+      callback: initEndScene.bind(this)
+    });
     rootContainer.addChild(toumaLineScene.container);
   }
 
   initSetsunaLine() {
-    const { originWidth, storyScene, rootContainer, finalHeight } = this;
-    const setsunaLineScene = new SetsunaLineScene({ width: originWidth, storyScene, finalHeight });
+    const { originWidth, storyScene, rootContainer, finalHeight, initEndScene } = this;
+    const setsunaLineScene = new SetsunaLineScene({
+      width: originWidth,
+      storyScene,
+      finalHeight,
+      callback: initEndScene.bind(this)
+    });
     rootContainer.addChild(setsunaLineScene.container);
+  }
+
+  initEndScene(lineScene) {
+    console.log('lineScene', lineScene);
+    const { finalHeight, rootContainer, app } = this;
+    const gameEndScene = new GameEndScene({ finalHeight, lineScene, app });
+    rootContainer.addChild(gameEndScene.container);
+    this.gameEndScene = gameEndScene;
   }
 
   get container() {
