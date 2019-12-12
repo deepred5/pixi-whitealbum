@@ -1,6 +1,6 @@
 # pixi-whitealbum
 
-使用[PixiJS](https://github.com/pixijs/pixi.js)制作的白色相簿2游戏
+使用[PixiJS](https://github.com/pixijs/pixi.js)制作的[白色相簿2](http://touma.whitealbum.cc/wa/)游戏
 
 ### 安装
 ```bash
