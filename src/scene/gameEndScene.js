@@ -17,11 +17,16 @@ export default class GameEndScene {
   }
 
   bindEvent() {
-    const { text } = this;
+    const { restart, watchVideo } = this;
 
-    text.interactive = true;
-    text.on('tap', () => {
+    restart.interactive = true;
+    restart.on('tap', () => {
       window.location.reload();
+    });
+
+    watchVideo.interactive = true;
+    watchVideo.on('tap', () => {
+      window.location.href = 'https://m.bilibili.com/video/av1977008';
     });
   }
 
@@ -39,8 +44,9 @@ export default class GameEndScene {
     const snowX = 300;
     const snowY = finalHeight / 2 - 40;
 
-    const startX = 290;
+    const startX = 190;
     const startY = finalHeight / 2 + 280;
+    const vidoeX = 390;
 
     // logo
     const logo = new Sprite(spriteTextures['wa2_tv.png']);
@@ -67,10 +73,17 @@ export default class GameEndScene {
       stroke: "#2b3f56",
       strokeThickness: 4
     });
-    const text = new Text('重新开始', style);
-    gameEndContainer.addChild(text);
-    text.position.set(startX, startY);
-    this.text = text;
+    const restart = new Text('重新开始', style);
+    gameEndContainer.addChild(restart);
+    restart.position.set(startX, startY);
+    this.restart = restart;
+
+
+    // 观看视频
+    const watchVideo = new Text('观看视频', style);
+    gameEndContainer.addChild(watchVideo);
+    watchVideo.position.set(vidoeX, startY);
+    this.watchVideo = watchVideo;
 
     this.initBeginAnima();
   }
