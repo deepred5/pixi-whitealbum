@@ -1,4 +1,4 @@
-import { Application, Container } from 'pixi.js';
+import { Application, Container, Spritesheet, Sprite } from 'pixi.js';
 import sound from 'pixi-sound';
 
 import SnowFallScene from './scene/snowFallScene';
@@ -8,18 +8,16 @@ import ToumaLineScene from './scene/toumaLineScene';
 import SetsunaLineScene from './scene/setsunaLineScene';
 import GameEndScene from './scene/gameEndScene';
 
-import setsunaImg from '../assets/setsuna.png';
-import toumaImg from '../assets/touma.png';
-import snowImg from '../assets/snow.png';
-import snow2Img from '../assets/snow2.png';
-import logoImg from '../assets/wa2_tv.png';
-import dialogImg from '../assets/dialog.png';
-import choiceImg from '../assets/choice.png';
 import newYearImg from '../assets/new_year.jpg';
 import bgm from '../assets/bgm.mp3';
 import newYearBgm from '../assets/new_year.mp3';
 import touma1Bgm from '../assets/touma1.mp3';
 import touma2Bgm from '../assets/touma2.mp3';
+
+import spriteJson from '../assets/wa_sprite.json';
+import spriteImg from '../assets/wa_sprite.png';
+
+
 
 import './styles/global.scss';
 
@@ -63,14 +61,8 @@ class WhiteAlbumApp {
   preLoad() {
     // https://pixijs.io/pixi-sound/examples/resources/boing.mp3
     loader
-      .add('setsuna', setsunaImg)
-      .add('touma', toumaImg)
-      .add('snow', snowImg)
-      .add('snow2', snow2Img)
-      .add('logo', logoImg)
-      .add('dialog', dialogImg)
-      .add('choice', choiceImg)
       .add('newYear', newYearImg)
+      .add('spriteImg', spriteImg)
       .add('bgm', bgm)
       .add('newYearBgm', newYearBgm)
       .add('touma1Bgm', touma1Bgm)
@@ -87,9 +79,20 @@ class WhiteAlbumApp {
   setup() {
     this.closeLoading();
     this.playBgm();
+    this.initSpriteTextures();
     this.initRender();
     this.initScene();
     this.app.ticker.add(delta => this.gameLoop(delta));
+  }
+
+  initSpriteTextures() {
+    // 图片精灵 多张图片合成一张图片
+    // https://github.com/parcel-bundler/parcel/issues/501
+    const texture = loader.resources["spriteImg"].texture.baseTexture;
+    const sheet = new Spritesheet(texture, spriteJson);
+    sheet.parse((textures) => {
+      this.spriteTextures = textures;
+    });
   }
 
   initRender() {
@@ -102,7 +105,6 @@ class WhiteAlbumApp {
   }
 
   playBgm() {
-    // return;
     // chrome限制不能自动播放背景音乐，需要用户手动触发
     if (!loader.resources['bgm'].sound.isPlaying) {
       sound.play('bgm', { loop: true });
@@ -139,14 +141,14 @@ class WhiteAlbumApp {
   }
 
   initBeginScene() {
-    const { finalHeight, rootContainer, initStory } = this;
-    const gameBeginScene = new GameBeginScene(finalHeight, initStory.bind(this));
+    const { finalHeight, rootContainer, initStory, spriteTextures } = this;
+    const gameBeginScene = new GameBeginScene(finalHeight, initStory.bind(this), spriteTextures);
     rootContainer.addChild(gameBeginScene.container);
     this.gameBeginScene = gameBeginScene;
   }
 
   initStory(goddess) {
-    const { gameBeginScene, rootContainer, snowFallScene, originWidth, finalHeight, initLine } = this;
+    const { gameBeginScene, rootContainer, snowFallScene, originWidth, finalHeight, initLine, spriteTextures } = this;
 
     const storyScene = new StoryScene({
       width: originWidth,
@@ -155,6 +157,7 @@ class WhiteAlbumApp {
       snowFallScene,
       gameBeginScene,
       callback: initLine.bind(this),
+      spriteTextures
     });
 
     rootContainer.addChild(storyScene.container);
@@ -170,31 +173,33 @@ class WhiteAlbumApp {
   }
 
   initToumaLine() {
-    const { originWidth, storyScene, rootContainer, finalHeight, initEndScene } = this;
+    const { originWidth, storyScene, rootContainer, finalHeight, initEndScene, spriteTextures } = this;
     const toumaLineScene = new ToumaLineScene({
       width: originWidth,
       storyScene,
       finalHeight,
-      callback: initEndScene.bind(this)
+      callback: initEndScene.bind(this),
+      spriteTextures
     });
     rootContainer.addChild(toumaLineScene.container);
   }
 
   initSetsunaLine() {
-    const { originWidth, storyScene, rootContainer, finalHeight, initEndScene } = this;
+    const { originWidth, storyScene, rootContainer, finalHeight, initEndScene, spriteTextures } = this;
     const setsunaLineScene = new SetsunaLineScene({
       width: originWidth,
       storyScene,
       finalHeight,
-      callback: initEndScene.bind(this)
+      callback: initEndScene.bind(this),
+      spriteTextures
     });
     rootContainer.addChild(setsunaLineScene.container);
   }
 
   initEndScene(lineScene) {
     console.log('lineScene', lineScene);
-    const { finalHeight, rootContainer, app } = this;
-    const gameEndScene = new GameEndScene({ finalHeight, lineScene, app });
+    const { finalHeight, rootContainer, app, spriteTextures } = this;
+    const gameEndScene = new GameEndScene({ finalHeight, lineScene, app, spriteTextures });
     rootContainer.addChild(gameEndScene.container);
     this.gameEndScene = gameEndScene;
   }

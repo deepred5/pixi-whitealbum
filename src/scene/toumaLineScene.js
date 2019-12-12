@@ -6,9 +6,10 @@ import Paragraph from '../components/paragraph';
 import { loader } from '../loader';
 
 export default class ToumaLineScene {
-  constructor({ storyScene, width, finalHeight }) {
+  constructor({ storyScene, width, finalHeight, spriteTextures }) {
     this.rootContainer = new Container();
     this.storyScene = storyScene;
+    this.spriteTextures = spriteTextures;
     this.width = width;
     this.finalHeight = finalHeight;
     this.padding = 20;
@@ -159,7 +160,7 @@ export default class ToumaLineScene {
   }
 
   render() {
-    const { container: toumaLineContainer, width, finalHeight, wordWrapWidth, storyContainer, currentPage } = this;
+    const { container: toumaLineContainer, width, finalHeight, wordWrapWidth, storyContainer, currentPage, spriteTextures } = this;
     toumaLineContainer.alpha = 0;
 
     const mask = new Graphics();
@@ -183,7 +184,7 @@ export default class ToumaLineScene {
     });
     tipContainer.addChild(text.container);
 
-    const snow = new Sprite(loader.resources['snow'].texture);
+    const snow = new Sprite(spriteTextures['snow.png']);
     snow.scale.set(0.6, 0.6);
     snow.position.set(30, -30);
     tipContainer.addChild(snow);

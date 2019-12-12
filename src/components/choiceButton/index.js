@@ -1,25 +1,25 @@
-import { Container, Text, TextStyle, filters, Sprite } from 'pixi.js';
+import { Container, Text, TextStyle, Sprite } from 'pixi.js';
 
 /**
  * 游戏分支选项按钮
  */
 export default class ChoiceButton {
-  constructor({ text, x, y, loader, fontSize = 30 }) {
+  constructor({ text, x, y, textures, fontSize = 30 }) {
     this.text = text;
     this.textX = x;
     this.textY = y;
     this.rootContainer = new Container();
-    this.loader = loader;
+    this.textures = textures;
     this.fontSize = fontSize;
 
     this.render();
   }
 
   render() {
-    const { rootContainer, text, textX, textY, loader, fontSize } = this;
+    const { rootContainer, text, textX, textY, textures, fontSize } = this;
 
     rootContainer.scale.set(1.2, 1.2);
-    const choice = new Sprite(loader.resources['choice'].texture);
+    const choice = new Sprite(textures);
     choice.x = 0;
     choice.y = 0;
     choice.scale.set(0.7, 1);

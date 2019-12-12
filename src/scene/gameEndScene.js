@@ -1,13 +1,12 @@
-import { Container, Sprite, Text, TextStyle, Graphics } from 'pixi.js';
+import { Container, Sprite, Text, TextStyle } from 'pixi.js';
 import { TweenMax } from "gsap/all";
-import { gradient } from '../util';
-import { loader } from '../loader';
 
 export default class GameEndScene {
-  constructor({ finalHeight, lineScene, app }) {
+  constructor({ finalHeight, lineScene, app, spriteTextures }) {
     this.rootContainer = new Container();
     this.finalHeight = finalHeight;
     this.lineScene = lineScene;
+    this.spriteTextures = spriteTextures;
     this.app = app;
     this.render();
     this.bindEvent();
@@ -27,7 +26,7 @@ export default class GameEndScene {
   }
 
   render() {
-    const { finalHeight, container: gameEndContainer, app } = this;
+    const { finalHeight, container: gameEndContainer, app, spriteTextures } = this;
 
     app.renderer.backgroundColor = 0xFFFFFFF;
 
@@ -44,13 +43,13 @@ export default class GameEndScene {
     const startY = finalHeight / 2 + 280;
 
     // logo
-    const logo = new Sprite(loader.resources['logo'].texture);
+    const logo = new Sprite(spriteTextures['wa2_tv.png']);
     gameEndContainer.addChild(logo);
     logo.x = logoX;
     logo.y = logoY;
 
     // snow
-    const snow = new Sprite(loader.resources['snow2'].texture);
+    const snow = new Sprite(spriteTextures['snow2.png']);
     gameEndContainer.addChild(snow);
 
     snow.scale.set(0.4);

@@ -7,13 +7,14 @@ import Paragraph from '../components/paragraph';
 import { loader } from '../loader';
 
 export default class SetsunaLineScene {
-  constructor({ storyScene, width, finalHeight, callback }) {
+  constructor({ storyScene, width, finalHeight, callback, spriteTextures }) {
     this.rootContainer = new Container();
     this.storyScene = storyScene;
     this.width = width;
     this.finalHeight = finalHeight;
     this.padding = 20;
     this.callback = callback;
+    this.spriteTextures = spriteTextures;
 
     this.currentPage = 0;
     this.currentParaIndex = 0;
@@ -227,7 +228,7 @@ export default class SetsunaLineScene {
   }
 
   render() {
-    const { container: setsunaLineContainer, width, finalHeight, wordWrapWidth, storyContainer, currentPage } = this;
+    const { container: setsunaLineContainer, width, finalHeight, wordWrapWidth, storyContainer, currentPage, spriteTextures } = this;
     setsunaLineContainer.alpha = 0;
 
     const mask = new Graphics();
@@ -251,7 +252,7 @@ export default class SetsunaLineScene {
     });
     tipContainer.addChild(text.container);
 
-    const snow = new Sprite(loader.resources['snow'].texture);
+    const snow = new Sprite(spriteTextures['snow.png']);
     snow.scale.set(0.6, 0.6);
     snow.position.set(30, -30);
     tipContainer.addChild(snow);

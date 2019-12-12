@@ -1,16 +1,16 @@
 import { Container, Sprite, Text, TextStyle, Graphics } from 'pixi.js';
 import { TweenMax, Power0 } from "gsap/all";
 import { gradient } from '../util';
-import { loader } from '../loader';
 
 /**
  * 入场动画场景
  */
 export default class GameBeginScene {
-  constructor(finalHeight, callback) {
+  constructor(finalHeight, callback, spriteTextures) {
     this.rootContainer = new Container();
     this.finalHeight = finalHeight;
     this.callback = callback;
+    this.spriteTextures = spriteTextures;
     this.goddess = 'touma';
 
     this.render();
@@ -94,7 +94,7 @@ export default class GameBeginScene {
   }
 
   render() {
-    const { finalHeight, rootContainer: gameBeginScene } = this;
+    const { finalHeight, rootContainer: gameBeginScene, spriteTextures } = this;
 
     // 冬马 position
     const toumaAnimateYBegin = finalHeight - 550;
@@ -125,7 +125,7 @@ export default class GameBeginScene {
     gameBeginScene.alpha = 0;
 
     // logo
-    const logo = new Sprite(loader.resources['logo'].texture);
+    const logo = new Sprite(spriteTextures['wa2_tv.png']);
     gameBeginScene.addChild(logo);
     logo.x = logoX;
     logo.y = logoY;
@@ -138,14 +138,14 @@ export default class GameBeginScene {
     this.toumaContainer = toumaContainer;
 
     // 冬马Sprite
-    const touma = new Sprite(loader.resources['touma'].texture);
+    const touma = new Sprite(spriteTextures['touma.png']);
     touma.y = 0;
     touma.x = 0;
     toumaContainer.addChild(touma);
     this.touma = touma;
 
     // 冬马snow
-    const toumaSnow = new Sprite(loader.resources['snow'].texture);
+    const toumaSnow = new Sprite(spriteTextures['snow.png']);
     toumaSnow.x = 110;
     toumaSnow.y = -60;
     toumaSnow.alpha = 0;
@@ -161,7 +161,7 @@ export default class GameBeginScene {
     this.setsunaContainer = setsunaContainer;
 
     // 雪菜Sprite
-    const setsuna = new Sprite(loader.resources['setsuna'].texture);
+    const setsuna = new Sprite(spriteTextures['setsuna.png']);
     setsuna.y = 0;
     setsuna.x = 0;
     setsunaContainer.addChild(setsuna);
@@ -169,7 +169,7 @@ export default class GameBeginScene {
 
 
     // 雪菜snow
-    const setsunaSnow = new Sprite(loader.resources['snow'].texture);
+    const setsunaSnow = new Sprite(spriteTextures['snow.png']);
     setsunaSnow.alpha = 0;
     setsunaSnow.x = 210;
     setsunaSnow.y = -60;

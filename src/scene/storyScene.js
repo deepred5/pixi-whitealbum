@@ -2,10 +2,9 @@ import { Container, Text, TextStyle, filters, Sprite } from 'pixi.js';
 import { TweenMax } from "gsap/all";
 
 import ChoiceButton from '../components/choiceButton';
-import { loader } from '../loader';
 
 export default class StoryScene {
-  constructor({ width, goddess, snowFallScene, gameBeginScene, finalHeight, callback }) {
+  constructor({ width, goddess, snowFallScene, gameBeginScene, finalHeight, callback, spriteTextures }) {
     this.rootContainer = new Container();
     this.goddess = goddess;
     this.snowFallScene = snowFallScene;
@@ -13,6 +12,7 @@ export default class StoryScene {
     this.width = width;
     this.finalHeight = finalHeight;
     this.callback = callback;
+    this.spriteTextures = spriteTextures;
     this.render();
     this.bindEvent();
   }
@@ -29,10 +29,10 @@ export default class StoryScene {
   }
 
   render() {
-    const { rootContainer: storyContainer, snowFallScene, width, goddess, finalHeight } = this;
+    const { rootContainer: storyContainer, snowFallScene, width, goddess, finalHeight, spriteTextures } = this;
     storyContainer.alpha = 0;
 
-    const dialog = new Sprite(loader.resources['dialog'].texture);
+    const dialog = new Sprite(spriteTextures['dialog.png']);
     storyContainer.addChild(dialog);
     dialog.y = finalHeight - 140;
     dialog.x = 50;
@@ -42,7 +42,7 @@ export default class StoryScene {
       text: '1. 去音乐会',
       x: 160,
       y: -40,
-      loader,
+      textures: spriteTextures['choice.png'],
     });
     storyContainer.addChild(button1.container);
     button1.container.x = 100;
@@ -53,7 +53,7 @@ export default class StoryScene {
       text: '2. 去新年参拜',
       x: 140,
       y: -40,
-      loader,
+      textures: spriteTextures['choice.png'],
     });
     storyContainer.addChild(button2.container);
     button2.container.x = 100;
