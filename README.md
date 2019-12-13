@@ -2,6 +2,8 @@
 
 使用[PixiJS](https://github.com/pixijs/pixi.js)制作的[白色相簿2](http://touma.whitealbum.cc/wa/)游戏
 
+![](./qrcode.jpg)
+
 ### 安装
 ```bash
 npm install
