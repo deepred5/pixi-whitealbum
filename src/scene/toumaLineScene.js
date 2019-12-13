@@ -1,16 +1,18 @@
-import { Container, Text, TextStyle, Graphics, Sprite } from 'pixi.js';
+import { Container, Graphics, Sprite } from 'pixi.js';
 import { TweenMax } from "gsap/all";
+import sound from 'pixi-sound';
 
 import Paragraph from '../components/paragraph';
 
 import { loader } from '../loader';
 
 export default class ToumaLineScene {
-  constructor({ storyScene, width, finalHeight, spriteTextures }) {
+  constructor({ storyScene, width, finalHeight, spriteTextures, callback }) {
     this.rootContainer = new Container();
     this.storyScene = storyScene;
     this.spriteTextures = spriteTextures;
     this.width = width;
+    this.callback = callback;
     this.finalHeight = finalHeight;
     this.padding = 20;
 
@@ -20,7 +22,7 @@ export default class ToumaLineScene {
       {
         paragraph: [
           {
-            content: '我随着武也、伊绪走出了酒馆。车站外人流攒动，到处洋溢着节日的欢快。',
+            content: '我把曜子送的票攥到了口袋，瞥了一眼墙上的钟，离演出开始只有30分钟了。',
             x: this.padding,
             y: 100
           },
@@ -30,42 +32,50 @@ export default class ToumaLineScene {
             y: 250
           },
           {
-            content: '然后，我突然注意到：我们不知何时，已经走到了御宿艺术文化大厅的门前。',
+            content: '随着人流，我来到了御宿艺术文化大厅。演出就要开始，会场喧嚣的声音渐渐安静下来。',
             x: this.padding,
             y: 400
           },
           {
-            content: '大批的人沿着大厅的楼梯走下。看来，音乐会好像刚刚结束。我望向手机的时钟，现在的时间是23时59分。',
+            content: '左手边的座位依旧是空的。我究竟是为何而来呢？',
             x: this.padding,
             y: 550
           },
           {
-            content: '而正当我们在热闹的喧嚣中随波逐流的时候，',
+            content: '而正当自我怀疑的时候，',
             x: this.padding,
-            y: 750
+            y: 700
           },
           {
-            content: '新的一年造访了！',
+            content: '我突然看到了一个熟悉的身影！',
             x: this.padding,
-            y: 850
+            y: 800
           }
         ]
       },
       {
         paragraph: [
           {
-            content: '第二段',
+            content: '对了 ... 新年快乐！',
             x: this.padding,
-            y: 100
-          }
-        ]
-      },
-      {
-        paragraph: [
+            y: 210,
+            bgm: 'touma3Bgm'
+          },
           {
-            content: '第3段',
+            content: '啊 ... 新年快乐！',
             x: this.padding,
-            y: 100
+            y: 400,
+            bgm: 'touma4Bgm'
+          },
+          {
+            content: '又是一个悲喜交加、永远的瞬间...',
+            x: this.padding,
+            y: 590,
+          },
+          {
+            content: '我开始喜欢白色相簿的季节了。',
+            x: this.padding,
+            y: 780,
           }
         ]
       }
@@ -90,6 +100,12 @@ export default class ToumaLineScene {
     const { currentPage, currentParaIndex, story, wordWrapWidth, storyContainer } = this;
     const paragraph = story[currentPage].paragraph[currentParaIndex];
     const container = storyContainer[currentPage];
+
+    if (paragraph.bgm) {
+      sound.play(paragraph.bgm, {
+        volume: 1.3,
+      });
+    }
 
     const text = new Paragraph({
       content: paragraph.content,
@@ -132,14 +148,75 @@ export default class ToumaLineScene {
     return false;
   }
 
+  get isFirstPageEnd() {
+    const { currentPage } = this;
+
+    if (currentPage === 0 && this.isCurrentPageEnd) {
+      return true;
+    }
+
+    return false;
+  }
+
+  showVocal() {
+    TweenMax.to(this.mask, 0.5, {
+      alpha: 0
+    });
+
+    TweenMax.to(this.vocal, 0.5, {
+      alpha: 1
+    });
+
+    if (!loader.resources['meetBgm'].sound.isPlaying) {
+      // 背景音乐放小
+      sound.volume('bgm', 0.5);
+
+      sound.play('meetBgm', {
+        volume: 1.3,
+        complete: () => {
+          // console.log('Sound finished');
+          // 还原背景音乐
+          sound.volume('bgm', 0.6);
+
+          TweenMax.to(this.mask, 0.5, {
+            alpha: 0.8
+          });
+
+          TweenMax.to(this.vocal, 0.5, {
+            alpha: 0,
+            complete: () => {
+              this.vocal.visible = false;
+              this.storyContainer[this.currentPage].visible = false;
+              this.currentPage += 1;
+              this.currentParaIndex = 0;
+              this.storyContainer[this.currentPage].visible = true;
+              setTimeout(() => this.mask.emit('tap'), 500);
+            }
+          });
+        }
+      });
+    }
+  }
+
   bindEvent() {
     const { mask, storyContainer } = this;
 
     mask.interactive = true;
 
     mask.on('tap', () => {
+
+      if (loader.resources['touma3Bgm'].sound.isPlaying || loader.resources['touma4Bgm'].sound.isPlaying) {
+        return;
+      }
+
+      if (this.isFirstPageEnd) {
+        this.showVocal();
+        return;
+      }
+
       if (this.isStoryEnd) {
-        console.log('end');
+        // console.log('isStoryEnd');
+        this.callback(this.container);
         return;
       }
 
@@ -189,6 +266,12 @@ export default class ToumaLineScene {
     snow.position.set(30, -30);
     tipContainer.addChild(snow);
     this.snow = snow;
+
+    const vocal = new Sprite(loader.resources['vocal'].texture);
+    toumaLineContainer.addChild(vocal);
+    vocal.alpha = 0;
+    vocal.y = (finalHeight - 450) / 2 - 20;
+    this.vocal = vocal;
 
     storyContainer.forEach((item) => mask.addChild(item));
 

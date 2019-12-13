@@ -58,14 +58,19 @@ export default class SetsunaLineScene {
           {
             content: '呐，你还好吗?',
             x: this.padding,
-            y: 300,
+            y: 250,
             bgm: 'touma1Bgm'
           },
           {
             content: '新年快乐。今年也多多关照啊！',
             x: this.padding,
-            y: 480,
+            y: 430,
             bgm: 'touma2Bgm'
+          },
+          {
+            content: '再见了，白色相簿的季节。',
+            x: this.padding,
+            y: 610
           },
         ]
       },
@@ -136,7 +141,7 @@ export default class SetsunaLineScene {
 
     if (paragraph.bgm) {
       sound.play(paragraph.bgm, {
-        volume: 2.5,
+        volume: 2.8,
       });
     }
 
@@ -159,13 +164,17 @@ export default class SetsunaLineScene {
 
     mask.on('tap', () => {
 
+      if (loader.resources['touma1Bgm'].sound.isPlaying || loader.resources['touma2Bgm'].sound.isPlaying) {
+        return;
+      }
+
       if (this.isFirstPageEnd) {
         this.showNewYear();
         return;
       }
 
       if (this.isStoryEnd) {
-        console.log('isStoryEnd');
+        // console.log('isStoryEnd');
         this.callback(this.container);
         return;
       }
@@ -187,7 +196,7 @@ export default class SetsunaLineScene {
   }
 
   showNewYear() {
-    console.log('showNewYear');
+    // console.log('showNewYear');
     TweenMax.to(this.mask, 0.5, {
       alpha: 0
     });
@@ -203,9 +212,9 @@ export default class SetsunaLineScene {
       sound.play('newYearBgm', {
         volume: 1.3,
         complete: () => {
-          console.log('Sound finished');
+          // console.log('Sound finished');
           // 还原背景音乐
-          sound.volume('bgm', 1);
+          // sound.volume('bgm', 0.8);
 
           TweenMax.to(this.mask, 0.5, {
             alpha: 0.8
@@ -219,7 +228,7 @@ export default class SetsunaLineScene {
               this.currentPage += 1;
               this.currentParaIndex = 0;
               this.storyContainer[this.currentPage].visible = true;
-              this.mask.emit('tap');
+              setTimeout(() => this.mask.emit('tap'), 500);
             }
           });
         }

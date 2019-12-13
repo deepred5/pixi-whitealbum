@@ -10,6 +10,7 @@ export default class GameEndScene {
     this.app = app;
     this.render();
     this.bindEvent();
+    this.num = 0;
   }
 
   get container() {
@@ -17,7 +18,20 @@ export default class GameEndScene {
   }
 
   bindEvent() {
-    const { restart, watchVideo } = this;
+    const { restart, watchVideo, snow, logo } = this;
+
+    snow.interactive = true;
+    logo.interactive = true;
+
+    const bonus = () => {
+      if (this.num === 10) {
+        return window.location.href = 'https://zhuanlan.zhihu.com/p/32103273';
+      }
+      this.num++;
+    };
+
+    snow.on('tap', bonus);
+    logo.on('tap', bonus);
 
     restart.interactive = true;
     restart.on('tap', () => {
@@ -53,6 +67,8 @@ export default class GameEndScene {
     gameEndContainer.addChild(logo);
     logo.x = logoX;
     logo.y = logoY;
+
+    this.logo = logo;
 
     // snow
     const snow = new Sprite(spriteTextures['snow2.png']);

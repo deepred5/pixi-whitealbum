@@ -20,6 +20,7 @@ export default class Paragraph {
       wordWrap: true,
       wordWrapWidth: width,
       breakWords: true,
+      lineHeight: fontSize + 15
     });
     const text = new Text(content, style);
     this.container = text;

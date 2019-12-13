@@ -9,10 +9,14 @@ import SetsunaLineScene from './scene/setsunaLineScene';
 import GameEndScene from './scene/gameEndScene';
 
 import newYearImg from '../assets/new_year.jpg';
+import vocalImg from '../assets/vocal.jpg';
 import bgm from '../assets/bgm.mp3';
 import newYearBgm from '../assets/new_year.mp3';
 import touma1Bgm from '../assets/touma1.mp3';
 import touma2Bgm from '../assets/touma2.mp3';
+import touma3Bgm from '../assets/touma3.mp3';
+import touma4Bgm from '../assets/touma4.mp3';
+import meetBgm from '../assets/meet.mp3';
 
 import spriteJson from '../assets/wa_sprite.json';
 import spriteImg from '../assets/wa_sprite.png';
@@ -62,11 +66,15 @@ class WhiteAlbumApp {
     // https://pixijs.io/pixi-sound/examples/resources/boing.mp3
     loader
       .add('newYear', newYearImg)
+      .add('vocal', vocalImg)
       .add('spriteImg', spriteImg)
       .add('bgm', bgm)
       .add('newYearBgm', newYearBgm)
       .add('touma1Bgm', touma1Bgm)
       .add('touma2Bgm', touma2Bgm)
+      .add('touma3Bgm', touma3Bgm)
+      .add('touma4Bgm', touma4Bgm)
+      .add('meetBgm', meetBgm)
       .on("progress", this.loadProgressHandler.bind(this))
       .load(this.setup.bind(this));
   }
@@ -197,7 +205,7 @@ class WhiteAlbumApp {
   }
 
   initEndScene(lineScene) {
-    console.log('lineScene', lineScene);
+    // console.log('lineScene', lineScene);
     const { finalHeight, rootContainer, app, spriteTextures } = this;
     const gameEndScene = new GameEndScene({ finalHeight, lineScene, app, spriteTextures });
     rootContainer.addChild(gameEndScene.container);
