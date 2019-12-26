@@ -4,6 +4,8 @@
 
 ![](./qrcode.jpg)
 
+[国外访问](https://anata.me/pixi-whitealbum/wa2/)
+
 ### 安装
 ```bash
 npm install
