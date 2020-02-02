@@ -84,8 +84,19 @@ class WhiteAlbumApp {
     this.loadingCurrent.style.width = `${loader.progress}%`;
   }
 
+  resizeHeight() {
+    // ios扫码进入时，window.innerHeight会变化两次，第一次全屏高度，第二次减去safasri工具栏高度
+    if (window.innerHeight !== this.clientHeight) {
+      this.clientHeight = window.innerHeight;
+      this.finalHeight = this.clientHeight / this.screenScaleRito;
+      this.app.renderer.resize(this.clientWidth, this.clientHeight);
+    }
+
+  }
+
   setup() {
     this.closeLoading();
+    this.resizeHeight();
     this.playBgm();
     this.initSpriteTextures();
     this.initRender();
