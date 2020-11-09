@@ -23,3 +23,7 @@ npm run build
 ```
 查看`dist`目录
 
+### Github Pages
+[git actions](./.github/workflows/ci.yml) 自动发布
+
+
