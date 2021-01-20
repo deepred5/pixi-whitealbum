@@ -21,7 +21,7 @@
   "author": "deepred",
   "license": "ISC",
   "dependencies": {
-    "gsap": "^3.0.1",
+    "gsap": "^3.6.0",
     "pixi-sound": "^3.0.4",
     "pixi.js": "^5.2.0"
   },
